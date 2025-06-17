@@ -1,11 +1,11 @@
 package com.example.springBoot.models;
 
 public class FuncionarioModel {
-    long codigo;
-    String nome;
-    String cpf;
-    String senha;
-    long tipo;
+    private long codigo;
+    private String nome;
+    private String cpf;
+    private String senha;
+    private long tipo;
 
     public long getCodigo() {
         return this.codigo;
@@ -24,19 +24,19 @@ public class FuncionarioModel {
     }
 
     public String getCpf() {
-        return this.nome;
+        return this.cpf;
     }
 
     public void setCpf(String c) {
-        this.nome = c;
+        this.cpf = c;
     }
 
     public String getSenha() {
-        return this.nome;
+        return this.senha;
     }
 
     public void setSenha(String s) {
-        this.nome = s;
+        this.senha = s;
     }
 
     public long getTipo() {

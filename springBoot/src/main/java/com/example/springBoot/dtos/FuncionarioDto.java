@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FuncionarioDto {
 
     @JsonProperty("nome")
-    String nome;
+    private String nome;
     @JsonProperty("cpf")
-    String cpf;
+    private String cpf;
     @JsonProperty("senha")
-    String senha;
+    private String senha;
     @JsonProperty("tipo")
-    long tipo;
+    private long tipo;
 
     public String getNome() {
         return this.nome;
