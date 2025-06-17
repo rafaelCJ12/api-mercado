@@ -8,9 +8,9 @@ public class ProdutoDto {
     @JsonProperty("nome")
     private String nome;
     @JsonProperty("valorunitario")
-    private double valorUnitario;
+    private BigDecimal valorUnitario;
     @JsonProperty("quantidade")
-    private double quantidade;
+    private BigDecimal quantidade;
     @JsonProperty("ehunidademassa")
     private boolean ehUnidadeMassa;
 
@@ -23,19 +23,19 @@ public class ProdutoDto {
         this.nome = n;
     }
 
-    public double getValor() {
+    public BigDecimal getValor() {
         return this.valorUnitario;
     }
 
-    public void setValor(double v) {
+    public void setValor(BigDecimal v) {
         this.valorUnitario = v;
     }
 
-    public double getQuantidade() {
+    public BigDecimal getQuantidade() {
         return this.quantidade;
     }
 
-    public void setQuantidade(double q) {
+    public void setQuantidade(BigDecimal q) {
         this.quantidade = q;
     }
 
@@ -43,7 +43,7 @@ public class ProdutoDto {
         return this.ehUnidadeMassa;
     }
 
-    public void setEhUnidadeMassa(Boolean b) {
+    public void setEhUnidadeMassa(boolean b) {
         this.ehUnidadeMassa = b;
     }
 
@@ -51,8 +51,8 @@ public class ProdutoDto {
         ProdutoModel p = new ProdutoModel();
 
         p.setNome(this.nome);
-        p.setValor(new BigDecimal(this.valorUnitario));
-        p.setQuantidade(new BigDecimal(this.quantidade));
+        p.setValor(this.valorUnitario);
+        p.setQuantidade(this.getQuantidade());
         p.setEhUnidadeMassa(this.ehUnidadeMassa);
 
         return p;
