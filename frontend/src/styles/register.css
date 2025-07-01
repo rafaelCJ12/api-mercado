@@ -1,0 +1,50 @@
+/* register.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fdf0e9;
+}
+
+form {
+    width: 350px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+input::placeholder {
+    color: #bbb;
+}
+
+button[type="submit"] {
+    background-color: #f28482;
+    color: #000;
+    font-weight: bold;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #e66b6b;
+}
