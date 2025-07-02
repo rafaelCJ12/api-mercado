@@ -1,163 +1,250 @@
+/* ===================================================================
+   style.css – Front-end PREMIUM (global para todas as páginas)
+   =================================================================== */
+
+/* ========== 1. Import & Variáveis ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --primary: #1abc9c;
-  --primary-dark: #17a589;
-  --bg: #f4f7fa;
-  --card-bg: #ffffff;
-  --text: #333333;
-  --text-muted: #666666;
-  --border: #e0e0e0;
-  --radius: 0.5rem;
+  /* cores */
+  --clr-bg: #e0e5ec;
+  --clr-surface: #ffffff;
+  --clr-accent: #5cafff;
+  --clr-accent-dark: #468eff;
+  --clr-secondary: #34495e;
+  --clr-text: #333333;
+  --clr-text-light: #666666;
+  --clr-border: #d1d9e6;
+
+  /* tipografia */
+  --font-base: 'Poppins', sans-serif;
+
+  /* espaçamentos e bordas */
+  --radius: 12px;
   --spacing: 1rem;
-  --font-sans: 'Segoe UI', Tahoma, sans-serif;
+
+  /* sombras “neumórficas” */
+  --shadow-light: 8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff;
+  --shadow-inset: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
 }
 
+/* Reset mínimo */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
-
 body {
-  font-family: var(--font-sans);
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  padding: var(--spacing);
+  font-family: var(--font-base);
+  background-color: var(--clr-bg);
+  color: var(--clr-text);
+  line-height: 1.5;
+  min-height: 100vh;
 }
 
-nav {
-  background-color: var(--primary);
-  padding: var(--spacing);
-  border-radius: var(--radius);
-  margin-bottom: calc(var(--spacing) * 2);
-}
-
-nav a {
-  color: #ffffff;
-  margin-right: var(--spacing);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-nav a:hover {
-  color: var(--primary-dark);
-}
-
-h1, h2, h3 {
-  margin-bottom: calc(var(--spacing) / 2);
-  color: var(--text);
-}
-
-h1 {
-  font-size: 2rem;
-}
-
-h2 {
-  font-size: 1.75rem;
-}
-
-h3 {
-  font-size: 1.5rem;
-}
-
+/* Container central */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--spacing);
+  padding: var(--spacing);
 }
 
-.menu-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--spacing);
-  margin-top: calc(var(--spacing) * 2);
+/* ========== 2. Tipografia ========== */
+h1, h2, h3 {
+  color: var(--clr-secondary);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
 }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
 
-.menu-card {
-  background-color: var(--card-bg);
-  border-radius: var(--radius);
-  padding: calc(var(--spacing) * 1.5);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-align: center;
-}
-
-.menu-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.menu-card .icon {
-  font-size: 3rem;
-  color: var(--primary);
-  margin-bottom: var(--spacing);
-}
-
-.button,
-button,
-.btn {
-  background-color: var(--primary);
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.button:hover,
-button:hover,
-.btn:hover {
-  background-color: var(--primary-dark);
-}
-
-form {
-  margin-bottom: calc(var(--spacing) * 2);
-}
-
-form input,
-form select,
-form button {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: var(--spacing);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 1rem;
-}
-
-form label {
-  display: block;
-  margin-bottom: calc(var(--spacing) / 2);
-  color: var(--text-muted);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: calc(var(--spacing) * 2);
-}
-
-th,
-td {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-}
-
-th {
-  background-color: var(--primary);
-  color: #ffffff;
-  text-align: left;
-}
-
-tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-pre {
-  background-color: #fafafa;
+/* ========== 3. Navegação (multi-page) ========== */
+nav {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
   padding: var(--spacing);
   border-radius: var(--radius);
-  overflow-x: auto;
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing);
+  display: flex;
+  gap: 1rem;
+}
+nav a {
+  text-decoration: none;
+  color: var(--clr-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: 0.3s;
+  font-weight: 500;
+}
+nav a:hover,
+nav a.active {
+  background: var(--clr-accent);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ========== 4. Menu Inicial (glass cards) ========== */
+.menu-header {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: var(--spacing);
+}
+.menu-header p {
+  color: var(--clr-text-light);
+}
+.menu-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.menu-card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.menu-card .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--clr-accent);
+}
+.menu-card h2 {
+  margin-bottom: 0.5rem;
+}
+.menu-card p {
+  color: var(--clr-text-light);
+  margin-bottom: var(--spacing);
+}
+.menu-card a {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(to right, var(--clr-accent), var(--clr-accent-dark));
+  color: #fff;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s, transform 0.3s;
+}
+.menu-card a:hover {
+  background: linear-gradient(to right, var(--clr-accent-dark), var(--clr-accent));
+  transform: translateY(-2px);
+}
+
+/* ========== 5. Formulários (neumorphism) ========== */
+form {
+  background: var(--clr-bg);
+  padding: var(--spacing);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing);
+}
+/* agrupa label+input vertical */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing);
+}
+/* inline para checkbox */
+.form-group.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+form label {
+  margin-bottom: 0.5rem;
+  color: var(--clr-text-light);
+  font-size: 0.95rem;
+}
+/* inputs gerais */
+form input[type="text"],
+form input[type="number"],
+form input[type="password"],
+form select {
+  padding: 0.6rem;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  background: var(--clr-bg);
+  box-shadow: var(--shadow-inset);
+  font: inherit;
+  color: var(--clr-text);
+  transition: box-shadow 0.3s;
+}
+form input:focus,
+form select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(92,175,255,0.4);
+}
+
+/* checkbox colorido e alinhado */
+form input[type="checkbox"] {
+  accent-color: var(--clr-accent);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* botões modernos */
+form button {
+  background: linear-gradient(to right, var(--clr-accent), var(--clr-accent-dark));
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ========== 6. Tabelas (clean + shadows) ========== */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--clr-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing);
+}
+table th, table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--clr-border);
+}
+table th {
+  background: var(--clr-secondary);
+  color: #fff;
+  font-weight: 500;
+}
+table tr:last-child td {
+  border-bottom: none;
+}
+table tbody tr:nth-child(even) {
+  background: #f9fafd;
+}
+
+/* ========== 7. Responsividade ========== */
+@media (max-width: 768px) {
+  .menu-container {
+    grid-template-columns: 1fr;
+  }
+  form {
+    padding: 0.75rem;
+  }
+  .container {
+    padding: 0.5rem;
+  }
 }
