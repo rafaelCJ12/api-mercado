@@ -2,15 +2,98 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard de Mercado</title>
+  <title>Marketplace Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background-color: #f4f7fa;
+      color: #333;
+    }
+    .menu-header {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .menu-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .menu-header p {
+      font-size: 1rem;
+      color: #666;
+    }
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin: 40px auto;
+      max-width: 900px;
+      padding: 0 20px;
+    }
+    .menu-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    .menu-card a {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background-color: #1abc9c;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+    .menu-card a:hover {
+      background-color: #17a589;
+    }
+    .menu-card .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      color: #1abc9c;
+    }
+    .menu-card p {
+      font-size: 0.95rem;
+      color: #555;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bem-vindo ao Marketplace</h1>
-  <nav>
-    <a href="produtos.html">Produtos</a><br/>
-    <a href="funcionarios.html">Funcionários</a><br/>
-    <a href="compras.html">Compras</a>
-  </nav>
+  <div class="menu-header">
+    <h1>🌐 Marketplace Dashboard</h1>
+    <p>Escolha uma das seções abaixo para gerenciar seu sistema</p>
+  </div>
+
+  <div class="menu-container">
+    <div class="menu-card">
+      <div class="icon">📦</div>
+      <h2>Produtos</h2>
+      <p>Adicione, edite e liste seus produtos.</p>
+      <a href="produtos.html">Ir para Produtos</a>
+    </div>
+
+    <div class="menu-card">
+      <div class="icon">👥</div>
+      <h2>Funcionários</h2>
+      <p>Cadastre, faça login e atualize colaboradores.</p>
+      <a href="funcionarios.html">Ir para Funcionários</a>
+    </div>
+
+    <div class="menu-card">
+      <div class="icon">🛒</div>
+      <h2>Compras</h2>
+      <p>Registre, liste e consulte transações.</p>
+      <a href="compras.html">Ir para Compras</a>
+    </div>
+  </div>
 </body>
 </html>
