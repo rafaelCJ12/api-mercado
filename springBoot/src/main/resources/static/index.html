@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Marketplace Dashboard</title>
+  <style>
+    /* Reset e layout básico */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; }
+    nav { background: #2c3e50; padding: 10px; display: flex; gap: 10px; }
+    nav button { background: #34495e; color: #ecf0f1; border: none; padding: 8px 12px; cursor: pointer; }
+    nav button.active { background: #1abc9c; }
+    .container { padding: 20px; }
+    section { display: none; }
+    section.active { display: block; }
+    h2 { margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #bdc3c7; padding: 8px; text-align: left; }
+    form { margin-bottom: 20px; }
+    form input, form select, form button { padding: 6px; margin-right: 10px; margin-bottom: 10px; }
+    form button { cursor: pointer; }
+    label { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <button id="tab-produtos">Produtos</button>
+    <button id="tab-funcionarios">Funcionários</button>
+    <button id="tab-compras">Compras</button>
+  </nav>
+
+  <div class="container">
+    <!-- ========== PRODUTOS ========== -->
+    <section id="produtos-section">
+      <h2>Gerenciar Produtos</h2>
+      <form id="produto-form">
+        <input type="hidden" id="produto-id" />
+        <input type="text" id="produto-nome" placeholder="Nome" required />
+        <input type="number" id="produto-valorunitario" placeholder="Valor Unitário" step="0.01" required />
+        <input type="number" id="produto-quantidade" placeholder="Quantidade" step="0.01" required />
+        <label><input type="checkbox" id="produto-ehunidademassa" /> Unidade de Massa</label>
+        <button type="submit">Salvar</button>
+        <button type="button" id="produto-form-cancel">Cancelar</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Nome</th><th>Valor</th><th>Quantidade</th><th>Unidade Massa</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="produtos-tbody"></tbody>
+      </table>
+    </section>
+
+    <!-- ========== FUNCIONÁRIOS ========== -->
+    <section id="funcionarios-section">
+      <h2>Gerenciar Funcionários</h2>
+
+      <div>
+        <h3>Adicionar Funcionário</h3>
+        <form id="func-create-form">
+          <input type="text" id="func-nome" placeholder="Nome" required />
+          <input type="text" id="func-cpf" placeholder="CPF" required />
+          <input type="password" id="func-senha" placeholder="Senha" required />
+          <input type="number" id="func-tipo" placeholder="Tipo" required />
+          <button type="submit">Salvar</button>
+        </form>
+      </div>
+
+      <div>
+        <h3>Login</h3>
+        <form id="func-login-form">
+          <input type="text" id="login-cpf" placeholder="CPF" required />
+          <input type="password" id="login-senha" placeholder="Senha" required />
+          <button type="submit">Login</button>
+        </form>
+        <div id="login-result"></div>
+      </div>
+
+      <div>
+        <h3>Atualizar Dados</h3>
+        <form id="func-update-form">
+          <input type="number" id="func-id-update" placeholder="ID do Funcionário" required />
+          <input type="text" id="func-nome-update" placeholder="Novo Nome" />
+          <input type="text" id="func-cpf-update" placeholder="Novo CPF" />
+          <input type="password" id="func-senha-update" placeholder="Nova Senha" />
+          <input type="number" id="func-tipo-update" placeholder="Novo Tipo" />
+          <button type="submit">Atualizar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========== COMPRAS ========== -->
+    <section id="compras-section">
+      <h2>Gerenciar Compras</h2>
+
+      <div>
+        <h3>Nova Compra</h3>
+        <form id="compra-create-form">
+          <input type="number" id="comp-responsavel" placeholder="ID do Funcionário" required />
+          <input type="number" id="comp-tipoPagamento" placeholder="Tipo Pagamento" required />
+          <input type="number" id="comp-valorRecebido" placeholder="Valor Recebido" step="0.01" required />
+          <input type="number" id="comp-status" placeholder="Status" required />
+          <button type="submit">Registrar</button>
+        </form>
+      </div>
+
+      <div>
+        <h3>Atualizar Compra</h3>
+        <form id="compra-update-form">
+          <input type="number" id="comp-id-update" placeholder="ID da Compra" required />
+          <input type="number" id="comp-tipoPagamento-update" placeholder="Tipo Pagamento" />
+          <input type="number" id="comp-valorRecebido-update" placeholder="Valor Recebido" step="0.01" />
+          <input type="number" id="comp-status-update" placeholder="Status" />
+          <button type="submit">Atualizar</button>
+        </form>
+      </div>
+
+      <div>
+        <h3>Listar Todas as Compras</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Responsável</th><th>Tipo Pagto</th>
+              <th>Valor Recebido</th><th>Status</th><th>Data/Hora</th>
+            </tr>
+          </thead>
+          <tbody id="compras-tbody"></tbody>
+        </table>
+      </div>
+
+      <div>
+        <h3>Buscar Compra por ID</h3>
+        <form id="compra-get-form">
+          <input type="number" id="comp-id-get" placeholder="ID da Compra" required />
+          <button type="submit">Buscar</button>
+        </form>
+        <pre id="compra-detail"></pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8080/api';
+
+    // Controle de abas
+    document.querySelectorAll('nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.id.replace('tab-','') + '-section')
+                .classList.add('active');
+      });
+    });
+    document.getElementById('tab-produtos').click();
+
+    /* ===== PRODUTOS ===== */
+    async function fetchProdutos() {
+      try {
+        const res = await fetch(`${API}/produtos`);
+        if (!res.ok) throw new Error('Não foi possível listar produtos');
+        const list = await res.json();
+        const tbody = document.getElementById('produtos-tbody');
+        tbody.innerHTML = '';
+        list.forEach(p => {
+          const id = p.codigoProduto ?? p.codigo;
+          const valor = p.valorUnitario ?? p.valor;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${id}</td>
+            <td>${p.nome}</td>
+            <td>${valor}</td>
+            <td>${p.quantidade}</td>
+            <td>${p.ehUnidadeMassa}</td>
+            <td><button onclick="editProduto(${id})">Editar</button></td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (e) { alert(e.message); }
+    }
+    document.getElementById('produto-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id       = document.getElementById('produto-id').value;
+      const nome     = document.getElementById('produto-nome').value;
+      const valor    = parseFloat(document.getElementById('produto-valorunitario').value);
+      const qtd      = parseFloat(document.getElementById('produto-quantidade').value);
+      const massa    = document.getElementById('produto-ehunidademassa').checked;
+      const body     = { nome, valorunitario: valor, quantidade: qtd, ehunidademassa: massa };
+      const url      = id ? `${API}/atualizar-produto/${id}` : `${API}/adicionar-novo-produto`;
+      const method   = id ? 'PUT' : 'POST';
+      const res      = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!res.ok) return alert('Erro ao salvar produto');
+      resetFormProd(); fetchProdutos();
+    });
+    function resetFormProd() {
+      ['produto-id','produto-nome','produto-valorunitario','produto-quantidade']
+      .forEach(id=>document.getElementById(id).value='');
+      document.getElementById('produto-ehunidademassa').checked=false;
+    }
+    document.getElementById('produto-form-cancel').addEventListener('click', resetFormProd);
+    async function editProduto(id) {
+      try {
+        const res = await fetch(`${API}/produto/${id}`);
+        if (!res.ok) throw new Error('Produto não encontrado');
+        const p = await res.json();
+        document.getElementById('produto-id').value = p.codigoProduto ?? p.codigo;
+        document.getElementById('produto-nome').value = p.nome;
+        document.getElementById('produto-valorunitario').value = p.valorUnitario ?? p.valor;
+        document.getElementById('produto-quantidade').value = p.quantidade;
+        document.getElementById('produto-ehunidademassa').checked = p.ehUnidadeMassa;
+        document.getElementById('tab-produtos').click();
+      } catch(e) { alert(e.message); }
+    }
+    fetchProdutos();
+
+    /* ===== FUNCIONÁRIOS ===== */
+    document.getElementById('func-create-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const nome = document.getElementById('func-nome').value;
+      const cpf  = document.getElementById('func-cpf').value;
+      const senha= document.getElementById('func-senha').value;
+      const tipo = parseInt(document.getElementById('func-tipo').value);
+      const res  = await fetch(`${API}/adicionar-novo-funcionario`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ nome, cpf, senha, tipo })
+      });
+      alert(res.ok ? 'Funcionário criado!' : 'Erro ao criar funcionário');
+      e.target.reset();
+    });
+
+    document.getElementById('func-login-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const cpf   = document.getElementById('login-cpf').value;
+      const senha = document.getElementById('login-senha').value;
+      const res   = await fetch(`${API}/login`, {
+        method:'GET', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ nome:'', cpf, senha, tipo:0 })
+      });
+      const msg = await res.text();
+      document.getElementById('login-result').innerText = msg;
+    });
+
+    document.getElementById('func-update-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id  = parseInt(document.getElementById('func-id-update').value);
+      const nome= document.getElementById('func-nome-update').value || '';
+      const cpf = document.getElementById('func-cpf-update').value || '';
+      const sen = document.getElementById('func-senha-update').value || '';
+      const tip = parseInt(document.getElementById('func-tipo-update').value) || 0;
+      const res = await fetch(`${API}/atualizar-dados/${id}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ nome, cpf, senha:sen, tipo:tip })
+      });
+      alert(res.ok ? 'Dados atualizados!' : 'Erro ao atualizar');
+      e.target.reset();
+    });
+
+    /* ===== COMPRAS ===== */
+    document.getElementById('compra-create-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const resp  = parseInt(document.getElementById('comp-responsavel').value);
+      const tipo  = parseInt(document.getElementById('comp-tipoPagamento').value);
+      const valor = parseFloat(document.getElementById('comp-valorRecebido').value);
+      const stat  = parseInt(document.getElementById('comp-status').value);
+      const res   = await fetch(`${API}/criar-nova-compra`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ responsavel:resp, tipoPagmento:tipo, valorRecebido:valor, status:stat })
+      });
+      alert(res.ok ? 'Compra registrada!' : 'Erro ao registrar compra');
+      e.target.reset();
+      fetchCompras();
+    });
+
+    document.getElementById('compra-update-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id    = parseInt(document.getElementById('comp-id-update').value);
+      const tipo  = parseInt(document.getElementById('comp-tipoPagamento-update').value)||0;
+      const valor = parseFloat(document.getElementById('comp-valorRecebido-update').value)||0;
+      const stat  = parseInt(document.getElementById('comp-status-update').value)||0;
+      const res   = await fetch(`${API}/atualiza-compra/${id}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ responsavel:0, tipoPagmento:tipo, valorRecebido:valor, status:stat })
+      });
+      alert(res.ok ? 'Compra atualizada!' : 'Erro ao atualizar compra');
+      e.target.reset();
+      fetchCompras();
+    });
+
+    async function fetchCompras() {
+      const res = await fetch(`${API}/compras`);
+      if (!res.ok) return;
+      const list = await res.json();
+      const tbody= document.getElementById('compras-tbody');
+      tbody.innerHTML='';
+      list.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.codigo}</td>
+          <td>${c.responsavel}</td>
+          <td>${c.tipoPagamento}</td>
+          <td>${c.valorRecebido}</td>
+          <td>${c.status}</td>
+          <td>${new Date(c.dataHora).toLocaleString()}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    fetchCompras();
+
+    document.getElementById('compra-get-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('comp-id-get').value);
+      const res= await fetch(`${API}/compra/${id}`);
+      if (!res.ok) return alert('Compra não encontrada');
+      const data = await res.json();
+      document.getElementById('compra-detail').innerText = JSON.stringify(data, null, 2);
+    });
+
+  </script>
+</body>
+</html>

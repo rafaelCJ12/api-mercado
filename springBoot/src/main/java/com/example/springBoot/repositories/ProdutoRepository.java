@@ -4,6 +4,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.springBoot.models.ProdutoModel;
 
 import java.sql.ResultSet;
@@ -33,6 +35,7 @@ public class ProdutoRepository {
 
     }
 
+    @Transactional
     public void salvarProduto(ProdutoModel p) throws DataAccessException{
         String consulta = "insert into produtos(nome, valorunitario, quantidade, ehunidademassa) values(?, ?, ?, ?)";
 
@@ -40,12 +43,14 @@ public class ProdutoRepository {
 
     }
 
+    @Transactional
     public boolean atualizarNomeProduto(ProdutoModel p) throws DataAccessException{
         String consulta = "update produtos set nome = ? where produtoid = ?";
 
         return this.jdbcTemplate.update(consulta, p.getNome(),  p.getCodigo()) > 0;
     }
 
+    @Transactional
     public boolean atualizarValorProduto(ProdutoModel p) throws DataAccessException{
         String consulta = "update produtos set valorunitario = ? where produtoid = ?";
 
@@ -53,6 +58,7 @@ public class ProdutoRepository {
         
     }
 
+    @Transactional
     public boolean atualizarQuantidadeProduto(ProdutoModel p) throws DataAccessException{
         String consulta = "update produtos set quantidade = ? where produtoid = ?";
         
