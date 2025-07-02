@@ -1,0 +1,12 @@
+/* estilos comuns */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; padding: 20px; }
+nav { background: #2c3e50; padding: 10px; }
+nav a { color: #ecf0f1; margin-right: 15px; text-decoration: none; }
+nav a:hover { text-decoration: underline; }
+h2 { margin: 20px 0 10px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { border: 1px solid #bdc3c7; padding: 8px; text-align: left; }
+form input, form button { padding: 6px; margin-right: 10px; margin-bottom: 10px; }
+form label { margin-right: 10px; }
+button { cursor: pointer; }

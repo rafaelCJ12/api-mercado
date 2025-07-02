@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Funcionários</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="produtos.html">Produtos</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="compras.html">Compras</a>
+  </nav>
+
+  <h2>Gerenciar Funcionários</h2>
+
+  <section>
+    <h3>Adicionar Funcionário</h3>
+    <form id="func-create-form">
+      <input type="text" id="func-nome" placeholder="Nome" required/>
+      <input type="text" id="func-cpf" placeholder="CPF" required/>
+      <input type="password" id="func-senha" placeholder="Senha" required/>
+      <input type="number" id="func-tipo" placeholder="Tipo" required/>
+      <button type="submit">Salvar</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Login</h3>
+    <form id="func-login-form">
+      <input type="text" id="login-cpf" placeholder="CPF" required/>
+      <input type="password" id="login-senha" placeholder="Senha" required/>
+      <button type="submit">Login</button>
+    </form>
+    <div id="login-result"></div>
+  </section>
+
+  <section>
+    <h3>Atualizar Dados</h3>
+    <form id="func-update-form">
+      <input type="number" id="func-id-update" placeholder="ID do Funcionário" required/>
+      <input type="text" id="func-nome-update" placeholder="Novo Nome"/>
+      <input type="text" id="func-cpf-update" placeholder="Novo CPF"/>
+      <input type="password" id="func-senha-update" placeholder="Nova Senha"/>
+      <input type="number" id="func-tipo-update" placeholder="Novo Tipo"/>
+      <button type="submit">Atualizar</button>
+    </form>
+  </section>
+
+  <script src="js/funcionarios.js"></script>
+</body>
+</html>

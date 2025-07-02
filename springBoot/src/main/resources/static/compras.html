@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Compras</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="produtos.html">Produtos</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="compras.html">Compras</a>
+  </nav>
+
+  <h2>Gerenciar Compras</h2>
+
+  <section>
+    <h3>Nova Compra</h3>
+    <form id="compra-create-form">
+      <input type="number" id="comp-responsavel" placeholder="ID do Funcionário" required/>
+      <input type="number" id="comp-tipoPagamento" placeholder="Tipo Pagamento" required/>
+      <input type="number" id="comp-valorRecebido" placeholder="Valor Recebido" step="0.01" required/>
+      <input type="number" id="comp-status" placeholder="Status" required/>
+      <button type="submit">Registrar</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Atualizar Compra</h3>
+    <form id="compra-update-form">
+      <input type="number" id="comp-id-update" placeholder="ID da Compra" required/>
+      <input type="number" id="comp-tipoPagamento-update" placeholder="Tipo Pagamento"/>
+      <input type="number" id="comp-valorRecebido-update" placeholder="Valor Recebido" step="0.01"/>
+      <input type="number" id="comp-status-update" placeholder="Status"/>
+      <button type="submit">Atualizar</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Listar Todas as Compras</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Responsável</th><th>Tipo Pgto</th><th>Valor</th><th>Status</th><th>Data/Hora</th>
+        </tr>
+      </thead>
+      <tbody id="compras-tbody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h3>Buscar Compra por ID</h3>
+    <form id="compra-get-form">
+      <input type="number" id="comp-id-get" placeholder="ID da Compra" required/>
+      <button type="submit">Buscar</button>
+    </form>
+    <pre id="compra-detail"></pre>
+  </section>
+
+  <script src="js/compras.js"></script>
+</body>
+</html>
