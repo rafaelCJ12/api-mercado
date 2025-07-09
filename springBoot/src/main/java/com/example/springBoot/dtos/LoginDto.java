@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoginDto {
     @JsonProperty("cpf")
     private String cpf;
-    @JsonProperty("sen")
+    @JsonProperty("senha")
     private String senha;
 
     public String getCpf() {

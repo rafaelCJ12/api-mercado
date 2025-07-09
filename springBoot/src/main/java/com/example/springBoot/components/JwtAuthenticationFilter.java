@@ -2,10 +2,13 @@ package com.example.springBoot.components;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -19,54 +22,56 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Value("${jwt.secret}")
     private String secretKey;
 
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse 
-    response, @NonNull FilterChain filterChain) throws IOException, ServletException {
-        
-        String authorizationHeader = request.getHeader("Authorization");
-        String token = null;
-        Claims claims = null;
-        String cpf = null;
-        UsernamePasswordAuthenticationToken authToken = null;
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().equals("/autenticacao/login") || 
-        request.getServletPath().equals("/api/cadastro-funcionario")) {
-            filterChain.doFilter(request, response); // ignora o login
+        String path = request.getServletPath();
+
+        // Ignorar rotas públicas
+        if (path.equals("/autenticacao/login") || path.equals("/api/cadastro-funcionario")) {
+            filterChain.doFilter(request, response);
             return;
         }
 
+        String authorizationHeader = request.getHeader("Authorization");
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
+            String token = authorizationHeader.substring(7);
+            try {
+                Claims claims = Jwts.parser()
+                        .setSigningKey(secretKey)
+                        .parseClaimsJws(token)
+                        .getBody();
 
-            try{
-                claims = Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody();
-                cpf = claims.getSubject();
+                String cpf = claims.getSubject();
 
-                if(cpf != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    authToken = new UsernamePasswordAuthenticationToken(cpf, null, Collections.emptyList());
+                if (cpf != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+                    
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(cpf, 
+                    null, authorities);
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
 
-            }
-
-            catch(Exception e) {
+            } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"erro\": \"Token inválido ou expirado\"}");
                 return;
-                
             }
         }
 
+        // Sempre permita que a requisição continue
         filterChain.doFilter(request, response);
-
-
     }
-    
 }
