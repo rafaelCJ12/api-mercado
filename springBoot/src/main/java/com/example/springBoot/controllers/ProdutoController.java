@@ -27,54 +27,54 @@ public class ProdutoController {
     }
 
     @PostMapping("/adicionar-novo-produto")
-    public ResponseEntity<ProdutoModel> salvaProduto(@RequestBody @Valid ProdutoDto pdto) {
+    public ResponseEntity<ProdutoDto> salvaProduto(@RequestBody @Valid ProdutoDto pdto) {
         ProdutoModel p = pdto.produtoDtoToModel();
 
         if(this.produtoService.salvarProduto(p)) {
-            return ResponseEntity.status(HttpStatus.OK).body(p);
+            return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
         }
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(p);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoDto.produtoModelToDto(p));
     }
 
-    @GetMapping("/produtos")
-    public ResponseEntity<List<ProdutoModel>> retornaProdutos() {
-        List<ProdutoModel> lp = this.produtoService.listarProdutos();
+    @GetMapping("/produtos?limit={l}&offset={o}")
+    public ResponseEntity<List<ProdutoDto>> retornaProdutos(@PathVariable(value ="l") int limit, @PathVariable(value ="o") int offset) {
+        List<ProdutoModel> lp = this.produtoService.listarProdutos(limit, offset);
 
         if(lp.isEmpty() || lp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(lp);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ProdutoDto.listProdutoModelToListDto(lp));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(lp);
+        return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.listProdutoModelToListDto(lp));
     }
 
     @GetMapping("/produto/{id}")
-    public ResponseEntity<ProdutoModel> retornaProduto(@PathVariable(value ="id") long id) {
+    public ResponseEntity<ProdutoDto> retornaProduto(@PathVariable(value ="id") long id) {
         ProdutoModel p = this.produtoService.buscarPorId(id);
 
         if(p == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(p);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ProdutoDto.produtoModelToDto(p));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(p);
+        return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
 
     }
 
     @PutMapping("/atualizar-produto/{id}")
-    public ResponseEntity<ProdutoModel> atualizaProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
+    public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
         ProdutoModel p = this.produtoService.buscarPorId(id);
 
         if(p == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(p);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ProdutoDto.produtoModelToDto(p));
         }
 
         p = pdto.produtoDtoToModel();
         p.setCodigo(id);
 
         if(this.produtoService.atualizarNomeProduto(p) && this.produtoService.atualizarQuantidadeProduto(p) && this.produtoService.atualizarValorProduto(p)){
-            return ResponseEntity.status(HttpStatus.OK).body(p);
+            return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
         }
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(p);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoDto.produtoModelToDto(p));
         
     }
 

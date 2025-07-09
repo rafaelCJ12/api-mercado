@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.springBoot.models.FuncionarioModel;
 
@@ -31,6 +33,7 @@ public class FuncionarioRepository {
         return this.jdbcTemplate.queryForObject(consulta, new FuncionarioRowMapper(), id);
     }
 
+    @Transactional
     public void salvarFuncionario(FuncionarioModel f) throws DataAccessException{
         String consulta = "insert into funcionarios(name, cpf, senha, fktipofunc) values(?, ?, ?, ?)";
         this.jdbcTemplate.update(consulta, f.getNome(), f.getCpf(), f.getSenha(), f.getTipo());
@@ -38,7 +41,7 @@ public class FuncionarioRepository {
     }
 
     public long retornaIdFuncionario(FuncionarioModel f) throws DataAccessException{
-        String consulta = "select funcionarioid from funcionarios where cpf = ? and senha  = ?";
+        String consulta = "select *from funcionarios where cpf = ? and senha  = ?";
 
         f = this.jdbcTemplate.queryForObject(consulta, new FuncionarioRowMapper(), f.getCpf(), f.getSenha());
 
@@ -49,18 +52,21 @@ public class FuncionarioRepository {
         return f.getCodigo();
     }
 
+    @Transactional
     public boolean atualizarNomeFuncionario(FuncionarioModel f) throws DataAccessException{
         String consulta = "update funcionarios set name = ? where funcionarioid = ?";
 
         return this.jdbcTemplate.update(consulta, f.getNome(),  f.getCodigo()) > 0;
     }
 
+    @Transactional
     public boolean atualizarCpfFuncionario(FuncionarioModel f) throws DataAccessException{
         String consulta = "update funcionarios set cpf = ? where funcionarioid = ?";
 
         return this.jdbcTemplate.update(consulta, f.getCpf(),  f.getCodigo()) > 0;
     }
 
+    @Transactional
     public boolean atualizarSenhaFuncionario(FuncionarioModel f) throws DataAccessException{
         String consulta = "update funcionarios set cpf = ? where funcionarioid = ?";
 
@@ -74,13 +80,10 @@ public class FuncionarioRepository {
     }
 
     private static class FuncionarioRowMapper implements RowMapper<FuncionarioModel> {
-        public FuncionarioModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public FuncionarioModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             FuncionarioModel fm = new FuncionarioModel();
 
-            if(rs == null) {
-                return null;
-            }
-
+    
             fm.setCodigo(rs.getLong("funcionarioid"));
             fm.setNome(rs.getString("name"));
             fm.setCpf(rs.getString("cpf"));

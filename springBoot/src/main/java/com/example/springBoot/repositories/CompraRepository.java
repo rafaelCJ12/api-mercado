@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.example.springBoot.models.CompraModel;
@@ -76,12 +77,8 @@ public class CompraRepository {
 
     // Classe interna para mapear o resultado da query
     private static class CompraRowMapper implements RowMapper<CompraModel> {
-        public CompraModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public CompraModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             CompraModel c = new CompraModel();
-            
-            if(rs == null) {
-                return null;
-            }
             
             c.setCodigo(rs.getLong("compraid"));
             c.setResponsavel(rs.getLong("fkfuncresponsavel"));

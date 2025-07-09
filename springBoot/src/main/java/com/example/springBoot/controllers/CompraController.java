@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,44 +29,44 @@ public class CompraController {
     }
 
     @PostMapping("/criar-nova-compra")
-    public ResponseEntity<CompraModel> salvaCompra(@RequestBody @Valid CompraDto cdto) {
+    public ResponseEntity<CompraDto> salvaCompra(@RequestBody @Valid CompraDto cdto) {
         CompraModel c = cdto.compraDtoToModel();
 
         if(this.compraService.salvaCompra(c)) {
-            return ResponseEntity.status(HttpStatus.OK).body(c);
+            return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
         }
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(c);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(CompraDto.compraModelToDto(c));
     }
 
     @GetMapping("/compras")
-    public ResponseEntity<List<CompraModel>> listarCompras() {
+    public ResponseEntity<List<CompraDto>> listarCompras() {
         List<CompraModel> lcm = this.compraService.listarCompras();
 
         if(lcm.isEmpty() || lcm == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(lcm);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CompraDto.listCompraModelToListDto(lcm));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(lcm);
+        return ResponseEntity.status(HttpStatus.OK).body(CompraDto.listCompraModelToListDto(lcm));
     }
 
     @GetMapping("/compra/{id}")
-    public ResponseEntity<CompraModel> buscaCompraPorId(@PathVariable(value ="id") long id) {
+    public ResponseEntity<CompraDto> buscaCompraPorId(@PathVariable(value ="id") long id) {
         CompraModel c = this.compraService.buscaCompraPorId(id);
 
         if(c == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(c);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CompraDto.compraModelToDto(c));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(c);
+        return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
     }
 
-    @PostMapping("/atualiza-compra/{id}")
-    public ResponseEntity<CompraModel> atualizaCompra(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
+    @PutMapping("/atualiza-compra/{id}")
+    public ResponseEntity<CompraDto> atualizaCompra(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
         CompraModel c = this.compraService.buscaCompraPorId(id);
 
         if(c == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(c);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CompraDto.compraModelToDto(c));
         }
 
         c = cdto.compraDtoToModel();
@@ -74,10 +75,10 @@ public class CompraController {
         c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 
         if(this.compraService.atualizaStatus(c) && this.compraService.atualizaTipoPagamento(c) && this.compraService.atualizarValorRecebido(c)) {
-            return ResponseEntity.status(HttpStatus.OK).body(c);
+            return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
         }
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(c);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(CompraDto.compraModelToDto(c));
 
     }
 

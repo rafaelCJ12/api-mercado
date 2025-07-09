@@ -3,6 +3,7 @@ package com.example.springBoot.repositories;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +22,10 @@ public class ProdutoRepository {
         this.jdbcTemplate = j;
     }
 
-    public List<ProdutoModel> listarProdutos() throws DataAccessException{
-        String consulta = "select *from produtos";
+    public List<ProdutoModel> listarProdutos(int limit, int offset) throws DataAccessException{
+        String consulta = "select *from produtos order by produtoid limit ? offset ? * ?";
 
-        return this.jdbcTemplate.query(consulta, new ProdutoRowMapper());
+        return this.jdbcTemplate.query(consulta, new ProdutoRowMapper(), limit, offset, limit);
     }
 
     public ProdutoModel buscarProdutoPorID(long id) throws DataAccessException{
@@ -33,6 +34,15 @@ public class ProdutoRepository {
 
         return this.jdbcTemplate.queryForObject(consulta, new ProdutoRowMapper(), id);
 
+    }
+
+    public List<ProdutoModel> listaProdutosDaCompra(long idCompra) throws DataAccessException {
+        String consulta = "select produtos.produtoid, produtos.nome, produtos.valorunitario, "+
+        "produtos.quantidade, produtos.ehunidademassa from produtos inner join produto_compra on "+
+        "produtos.produtoid = produto_compra.fkproduto inner join compras on " + 
+        "compras.compraid = produto_compra.fkcompra where compras.compraid = ? order by produtos.produtoid";
+
+        return this.jdbcTemplate.query(consulta, new ProdutoRowMapper(), idCompra);
     }
 
     @Transactional
@@ -73,18 +83,15 @@ public class ProdutoRepository {
 
     // Classe interna para mapear o resultado da query
     private static class ProdutoRowMapper implements RowMapper<ProdutoModel> {
-        public ProdutoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public ProdutoModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             ProdutoModel p = new ProdutoModel();
 
-            if(rs == null) {
-                return null;
-            }
-            
             p.setCodigo(rs.getLong("produtoid"));
             p.setNome(rs.getString("nome"));
             p.setValor(rs.getBigDecimal("valorunitario"));
             p.setQuantidade(rs.getBigDecimal("quantidade"));
             p.setEhUnidadeMassa(rs.getBoolean("ehunidademassa"));
+            
             return p;
         }
     }

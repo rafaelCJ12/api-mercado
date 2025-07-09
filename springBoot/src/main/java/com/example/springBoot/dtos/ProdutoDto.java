@@ -1,10 +1,15 @@
 package com.example.springBoot.dtos;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.example.springBoot.models.ProdutoModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProdutoDto {
+    @JsonProperty("codigo")
+    private long codigo;
     @JsonProperty("nome")
     private String nome;
     @JsonProperty("valorunitario")
@@ -13,6 +18,14 @@ public class ProdutoDto {
     private BigDecimal quantidade;
     @JsonProperty("ehunidademassa")
     private boolean ehUnidadeMassa;
+
+    public long getCodigo() {
+        return this.codigo;
+    }
+
+    public void setCodigo(long c) {
+        this.codigo = c;
+    }
 
    
     public String getNome() {
@@ -56,6 +69,38 @@ public class ProdutoDto {
         p.setEhUnidadeMassa(this.ehUnidadeMassa);
 
         return p;
+    }
+
+    public static ProdutoDto produtoModelToDto(ProdutoModel pm) {
+        ProdutoDto pDto = new ProdutoDto();
+
+        if(pm == null) {
+            return pDto;
+        }
+
+        pDto.setCodigo(pm.getCodigo());
+        pDto.setNome(pm.getNome());
+        pDto.setValor(pm.getValor());
+        pDto.setQuantidade(pm.getQuantidade());
+        pDto.setEhUnidadeMassa(pm.getEhUnidadeMassa());
+
+        return pDto;
+    }
+
+    public static List<ProdutoDto> listProdutoModelToListDto(List<ProdutoModel> lPm) {
+        List<ProdutoDto> lPdto = new LinkedList<>();
+        int i = 0;
+
+        if(lPm == null) {
+            return lPdto;
+        }
+
+        for(i = 0; i < lPm.size(); i++) {
+            lPdto.add(ProdutoDto.produtoModelToDto(lPm.get(i)));
+        }
+
+
+        return lPdto;
     }
 
 

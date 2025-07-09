@@ -55,7 +55,7 @@ public class FuncionarioService {
         int j = 0;
         char valores[] = {'0','1','2','3','4','5','6','7','8','9'};
 
-        if(numero.length() != 11 || numero == null) {
+        if(numero == null || numero.length() != 11) {
             return false;
         }
 
@@ -98,7 +98,7 @@ public class FuncionarioService {
             }
         }
 
-        else if(11 - (soma % 11) != numero.charAt(9)) {
+        else if(11 - (soma % 11) != numero.charAt(9) - '0') {
             return false;
         }
 
@@ -116,7 +116,7 @@ public class FuncionarioService {
             }
         }
 
-        else if(11 - (soma % 11) != numero.charAt(10)) {
+        else if(11 - (soma % 11) != numero.charAt(10) - '0') {
             return false;
         }
 
@@ -200,12 +200,9 @@ public class FuncionarioService {
 
         if(this.nomeValido(f.getNome()) && this.numeroCpfValido(f.getCpf()) && this.senhaValida(f.getSenha())) {
             try{
-                f.setSenha(stringHash(f.getSenha()));
-                if(f.getSenha() != null) {
-                    this.funcionarioRepository.salvarFuncionario(f);
-                    return true;
-
-                }
+                f.setSenha(this.stringHash(f.getSenha()));
+                this.funcionarioRepository.salvarFuncionario(f);
+                return true;
             }
 
             catch(Exception e) {

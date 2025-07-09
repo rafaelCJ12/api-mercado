@@ -4,7 +4,9 @@ import com.example.springBoot.models.FuncionarioModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FuncionarioDto {
-
+    
+    @JsonProperty("codigo")
+    private long codigo;
     @JsonProperty("nome")
     private String nome;
     @JsonProperty("cpf")
@@ -13,6 +15,14 @@ public class FuncionarioDto {
     private String senha;
     @JsonProperty("tipo")
     private long tipo;
+
+    public long getCodigo() {
+        return this.codigo;
+    }
+
+    public void setCodigo(long c) {
+        this.codigo = c;
+    }
 
     public String getNome() {
         return this.nome;
@@ -23,19 +33,19 @@ public class FuncionarioDto {
     }
 
     public String getCpf() {
-        return this.nome;
+        return this.cpf;
     }
 
     public void setCpf(String c) {
-        this.nome = c;
+        this.cpf = c;
     }
 
     public String getSenha() {
-        return this.nome;
+        return this.senha;
     }
 
     public void setSenha(String s) {
-        this.nome = s;
+        this.senha = s;
     }
 
     public long getTipo() {
@@ -55,6 +65,23 @@ public class FuncionarioDto {
         fm.setTipo(this.tipo);
 
         return fm;
+    }
+
+    public static FuncionarioDto funcionarioModelToDto(FuncionarioModel fm) {
+        FuncionarioDto fDto = new FuncionarioDto();
+
+        if(fm == null) {
+            return fDto;
+        }
+
+        fDto.setCodigo(fm.getCodigo());
+        fDto.setNome(fm.getNome());
+        fDto.setCpf(fm.getCpf());
+        fDto.setSenha(fm.getSenha());
+        fDto.setTipo(fm.getTipo());
+
+        return fDto;
+
     }
     
 }

@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\java",
+    "\\src\\main\\java\\com",
+    "\\src\\main\\java\\com\\example",
+    "\\src\\main\\java\\com\\example\\springBoot",
+    "\\src\\main\\java\\com\\example\\springBoot\\components"
+  ],
+  "SelectedNode": "\\src\\main\\java\\com\\example\\springBoot\\Application.java",
+  "PreviewInSolutionExplorer": false
+}

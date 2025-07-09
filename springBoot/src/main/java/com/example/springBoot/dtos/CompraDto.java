@@ -1,6 +1,8 @@
 package com.example.springBoot.dtos;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.example.springBoot.models.CompraModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,6 +58,38 @@ public class CompraDto {
         c.setValorRecebido(this.valorRecebido);
 
         return c;
+    }
+
+    public static CompraDto compraModelToDto(CompraModel cm) {
+        CompraDto cdto = new CompraDto();
+
+        if(cm == null) {
+            return cdto;
+        }
+
+        cdto.setResponsavel(cm.getResponsavel());
+        cdto.setStatus(cm.getStatus());
+        cdto.setTipoPagamento(cm.getTipoPagamento());
+        cdto.setValorRecebido(cm.getValorRecebido());
+
+        return cdto;
+    }
+
+    public static List<CompraDto> listCompraModelToListDto(List<CompraModel> lCm) {
+        List<CompraDto> lCdto = new LinkedList<>();
+        int i = 0;
+
+        if(lCm == null) {
+            return lCdto;
+        }
+
+        for(i = 0; i < lCm.size(); i++) {
+            lCdto.add(CompraDto.compraModelToDto(lCm.get(i)));
+
+        }
+
+        return lCdto;
+
     }
 
 
