@@ -187,11 +187,12 @@ form button {
   background: linear-gradient(to right, var(--clr-accent), var(--clr-accent-dark));
   color: #fff;
   border: none;
-  padding: 0.8rem 1.6rem;
   border-radius: var(--radius);
   font: inherit;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 0.75em 1.5em;
+  margin: 1em;
 }
 form button:hover {
   transform: translateY(-2px);
