@@ -29,8 +29,14 @@ public class ProdutoCompraService {
     }
 
     public List<ProdutoCompraModel> listaProdutoCompra(long idCompra, int limit, int offset) {
+        List<ProdutoCompraModel> lPcm = null;
+        int i = 0;
         try{
-            return this.produtoCompraRepository.listaProdutoCompra(idCompra, limit, offset);
+            lPcm = this.produtoCompraRepository.listaProdutoCompra(idCompra, limit, offset);
+            for(i = 0; i < lPcm.size(); i++) {
+                lPcm.get(i).setNomeProduto(this.nomeProduto(lPcm.get(i).getProduto()));
+            }
+            return lPcm;
 
         }
 
@@ -67,7 +73,6 @@ public class ProdutoCompraService {
         return pm.getValor();
     }
 
-    /*
     private String nomeProduto(long idProduto) throws DataAccessException{
         ProdutoModel pm = this.produtoRepository.buscarProdutoPorID(idProduto);
 
@@ -76,7 +81,7 @@ public class ProdutoCompraService {
         }
 
         return pm.getNome();
-    }*/
+    }
 
 
     public boolean salvarProdutoEmCompra(ProdutoCompraModel p) {
@@ -84,7 +89,6 @@ public class ProdutoCompraService {
             if(this.validarProdutoNaCompra(p)) {
                 p.setValor(this.valorUnitarioDoProduto(p.getProduto()));
                 //p.setNomeProduto(this.nomeProduto(p.getProduto()));
-                System.out.println("O problema eh em salvar produtoCompra do repository");
                 this.produtoCompraRepository.salvarProdutoEmCompra(p);
                 return true;
             }
