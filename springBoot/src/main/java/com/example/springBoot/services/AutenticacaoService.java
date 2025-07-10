@@ -51,6 +51,7 @@ public class AutenticacaoService {
 
         try{
             if(this.funcionarioRepository.retornaIdFuncionario(fm) > 0) {
+                System.out.println(jwtUtil.gerarToken(fm.getCpf()));
                 return jwtUtil.gerarToken(fm.getCpf());
             }
 

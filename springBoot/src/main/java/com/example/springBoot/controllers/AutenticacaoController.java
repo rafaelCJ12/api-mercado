@@ -28,11 +28,11 @@ public class AutenticacaoController {
         String token = this.autenticacaoService.autenticar(ldto.getCpf(), ldto.getSenha());
 
         System.out.println("Entrou no login.");
-        
+
         if(token != null) {
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", token));
         }
-
+        
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("status", "erro"));
     }
     
