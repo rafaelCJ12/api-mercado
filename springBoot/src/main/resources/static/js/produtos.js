@@ -1,3 +1,16 @@
+// Autenticação: checa token e injeta header em todas as requisições
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+const originalFetch = window.fetch;
+window.fetch = (url, options = {}) => {
+  options.headers = {
+    ...(options.headers || {}),
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+  return originalFetch(url, options);
+};
+
 // js/produtos.js
 
 const API = 'http://localhost:8080/api';
