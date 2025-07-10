@@ -21,7 +21,7 @@ public class JwtUtil {
     private long expirationTime = 7200000; // duas horas
 
     public String gerarToken(String s) {
-        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
                 .setSubject(s)

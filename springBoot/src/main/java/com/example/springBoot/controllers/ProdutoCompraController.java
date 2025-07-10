@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springBoot.services.ProdutoCompraService;
@@ -43,9 +44,10 @@ public class ProdutoCompraController {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoCompraDto.produtoCompraModelToDto(pcm));
     }
 
-    @GetMapping("/produtos-compra/compra={idcompra}?limit={l}&offset={o}")
+    @GetMapping("/produtos-compra/compra={idcompra}")
     public ResponseEntity<List<ProdutoCompraDto>> retornaProdutoCompra(@PathVariable(value = "idcompra") 
-    long compra, @PathVariable(value = "l") int limit, @PathVariable(value = "o") int offset) {
+    long compra, @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+    @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         List<ProdutoCompraModel> lPcm = this.produtoCompraService.listaProdutoCompra(compra, limit, offset);
 
         if(lPcm.isEmpty() || lPcm == null) {
@@ -82,11 +84,11 @@ public class ProdutoCompraController {
     public ResponseEntity<Map<String, String>> deletarProdutoDaCompra(@PathVariable(value = "idCompra") long
     idCompra, @PathVariable(value = "idProduto") long idProduto) {
         if(this.produtoCompraService.deletarProdutoDaCompra(idCompra, idProduto)) {
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("STATUS", "Quantidade do produto atualizada."));
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("STATUS", "Produto retirado da compra."));
         }
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("STATUS", 
-        "Erro ao deletar o produto da compra."));
+        "Erro ao retirar o produto da compra."));
     }
     
 }

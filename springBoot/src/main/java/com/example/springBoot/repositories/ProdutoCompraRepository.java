@@ -44,7 +44,7 @@ public class ProdutoCompraRepository {
 
     @Transactional
     public void salvarProdutoEmCompra(ProdutoCompraModel p) throws DataAccessException{
-        String consulta = "inset into produto_compra(fkproduto, fkcompra, valorunitario, quantidade) " +
+        String consulta = "insert into produto_compra(fkproduto, fkcompra, valorunitario, quantidade) " +
         "values(?, ?, ?, ?)";
 
         this.jdbcTemplate.update(consulta, p.getProduto(), p.getCompra(), p.getValor(), p.getQuantidade());

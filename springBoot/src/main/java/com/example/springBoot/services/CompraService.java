@@ -3,6 +3,8 @@ package com.example.springBoot.services;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ public class CompraService {
 
     public boolean salvaCompra(CompraModel c) {
         try{
+            c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
             this.compraRepository.salvaCompra(c);
             return true;
         }
@@ -73,6 +76,7 @@ public class CompraService {
     public boolean atualizarValorRecebido(CompraModel c) {
         try{
             if(this.valorValido(c.getValorRecebido()) && c.getStatus() == 1) {
+                c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
                 return this.compraRepository.atualizaValorRecebido(c);
             }
         }
@@ -88,6 +92,7 @@ public class CompraService {
     public boolean atualizaTipoPagamento(CompraModel c) {
         try{
             if(c.getTipoPagamento() > 0 && c.getStatus() == 1) {
+                c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
                 return this.compraRepository.atualizaTipoPagamento(c);
             }
         }
@@ -165,6 +170,7 @@ public class CompraService {
                 if(st == 2) {
                     this.descontaProdutosDoEstoque(c);
                 }
+                c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
                 return this.atualizaStatus(c);
             }
         }

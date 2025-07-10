@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springBoot.dtos.ProdutoDto;
@@ -26,7 +27,7 @@ public class ProdutoController {
         this.produtoService = ps;
     }
 
-    @PostMapping("/adicionar-novo-produto")
+    @PostMapping("/produtos")
     public ResponseEntity<ProdutoDto> salvaProduto(@RequestBody @Valid ProdutoDto pdto) {
         ProdutoModel p = pdto.produtoDtoToModel();
 
@@ -37,8 +38,9 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoDto.produtoModelToDto(p));
     }
 
-    @GetMapping("/produtos?limit={l}&offset={o}")
-    public ResponseEntity<List<ProdutoDto>> retornaProdutos(@PathVariable(value ="l") int limit, @PathVariable(value ="o") int offset) {
+    @GetMapping("/produtos")
+    public ResponseEntity<List<ProdutoDto>> retornaProdutos(@RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+    @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         List<ProdutoModel> lp = this.produtoService.listarProdutos(limit, offset);
 
         if(lp.isEmpty() || lp == null) {
@@ -48,7 +50,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.listProdutoModelToListDto(lp));
     }
 
-    @GetMapping("/produto/{id}")
+    @GetMapping("/produtos/{id}")
     public ResponseEntity<ProdutoDto> retornaProduto(@PathVariable(value ="id") long id) {
         ProdutoModel p = this.produtoService.buscarPorId(id);
 
@@ -59,7 +61,7 @@ public class ProdutoController {
 
     }
 
-    @PutMapping("/atualizar-produto/{id}")
+    @PutMapping("/produtos/{id}")
     public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
         ProdutoModel p = this.produtoService.buscarPorId(id);
 

@@ -35,7 +35,8 @@ public class ProdutoCompraService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para retornar os produtos-compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return null;
 
         }
@@ -49,7 +50,7 @@ public class ProdutoCompraService {
             return false;
         }
 
-        if(pm.getQuantidade().compareTo(pcm.getQuantidade()) > 0 && cm.getStatus() == 1) {
+        if(pm.getQuantidade().compareTo(pcm.getQuantidade()) >= 0 && cm.getStatus() == 1) {
             return true;
         }
         
@@ -83,13 +84,16 @@ public class ProdutoCompraService {
             if(this.validarProdutoNaCompra(p)) {
                 p.setValor(this.valorUnitarioDoProduto(p.getProduto()));
                 //p.setNomeProduto(this.nomeProduto(p.getProduto()));
+                System.out.println("O problema eh em salvar produtoCompra do repository");
                 this.produtoCompraRepository.salvarProdutoEmCompra(p);
                 return true;
             }
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para salvar produto na compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
+            
         }
         return false;
     }
@@ -105,7 +109,8 @@ public class ProdutoCompraService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar a quantidade produto na compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
         return false;
     }
@@ -117,6 +122,8 @@ public class ProdutoCompraService {
         }
 
         catch(Exception e) {
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
 
         }
 
@@ -124,7 +131,7 @@ public class ProdutoCompraService {
     }
 
     public BigDecimal retornaTotalCompra(long idCompra) {
-        MathContext mc = new MathContext(3, RoundingMode.HALF_UP);
+        MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
         BigDecimal total = new BigDecimal("0.00", mc);
         List<ProdutoCompraModel> lPc = this.listaProdutoCompra(idCompra);
         int i = 0;
@@ -147,7 +154,8 @@ public class ProdutoCompraService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta para deletar o produto da compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;

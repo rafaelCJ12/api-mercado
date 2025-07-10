@@ -15,7 +15,7 @@ import com.example.springBoot.services.AutenticacaoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/autenticacao")
+@RequestMapping("/api")
 public class AutenticacaoController {
     private AutenticacaoService autenticacaoService;
 

@@ -28,7 +28,7 @@ public class CompraController {
         this.compraService = cs;
     }
 
-    @PostMapping("/criar-nova-compra")
+    @PostMapping("/compra")
     public ResponseEntity<CompraDto> salvaCompra(@RequestBody @Valid CompraDto cdto) {
         CompraModel c = cdto.compraDtoToModel();
 
@@ -39,7 +39,7 @@ public class CompraController {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(CompraDto.compraModelToDto(c));
     }
 
-    @GetMapping("/compras")
+    @GetMapping("/compra")
     public ResponseEntity<List<CompraDto>> listarCompras() {
         List<CompraModel> lcm = this.compraService.listarCompras();
 
@@ -61,7 +61,7 @@ public class CompraController {
         return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
     }
 
-    @PutMapping("/atualiza-compra/{id}")
+    @PutMapping("/compra/{id}")
     public ResponseEntity<CompraDto> atualizaCompra(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
         CompraModel c = this.compraService.buscaCompraPorId(id);
 
@@ -70,9 +70,7 @@ public class CompraController {
         }
 
         c = cdto.compraDtoToModel();
-
         c.setCodigo(id);
-        c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 
         if(this.compraService.atualizaStatus(c) && this.compraService.atualizaTipoPagamento(c) && this.compraService.atualizarValorRecebido(c)) {
             return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));

@@ -26,7 +26,8 @@ public class ProdutoService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL de listar produtos incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return null;
         }
 
@@ -39,7 +40,8 @@ public class ProdutoService {
         }
 
         catch(Exception e){
-            System.out.println("ERRO: consulta SQL para busca por id incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return null;
         }
     }
@@ -100,7 +102,8 @@ public class ProdutoService {
             }
 
             catch(Exception e) {
-                System.out.println("ERRO: consulta SQL para salvar produto incorreta.");
+                System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+                " - " + e.getMessage());
             }
         }
         return false;
@@ -112,7 +115,8 @@ public class ProdutoService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar nome incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -126,7 +130,8 @@ public class ProdutoService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar o valor do produto incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -141,7 +146,8 @@ public class ProdutoService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar a quantidade do produto incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -153,7 +159,8 @@ public class ProdutoService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para deletar produto incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;

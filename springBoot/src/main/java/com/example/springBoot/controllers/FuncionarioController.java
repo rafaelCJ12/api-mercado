@@ -26,7 +26,7 @@ public class FuncionarioController {
     }
 
 
-    @PostMapping("/cadastro-funcionario")
+    @PostMapping("/funcionario")
     public ResponseEntity<Map<String, String>> salvarFuncionario(@RequestBody @Valid FuncionarioDto fdto) {
         FuncionarioModel f = fdto.funcionarioDtoToModel();
 
@@ -37,7 +37,7 @@ public class FuncionarioController {
     }
 
 
-    @PutMapping("/atualizar-dados/{id}")
+    @PutMapping("/funcionarios/{id}")
     public ResponseEntity<Map<String, String>> atualizarDados(@PathVariable(value ="id") long id, @RequestBody @Valid FuncionarioDto fdto) {
         FuncionarioModel f = this.funcionarioService.buscarFuncionarioPorId(id);
 

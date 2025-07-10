@@ -79,14 +79,22 @@ public class CompraRepository {
     private static class CompraRowMapper implements RowMapper<CompraModel> {
         public CompraModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             CompraModel c = new CompraModel();
+            Timestamp timestamp = rs.getTimestamp("datahora");
             
             c.setCodigo(rs.getLong("compraid"));
             c.setResponsavel(rs.getLong("fkfuncresponsavel"));
             c.setTipoPagamento(rs.getLong("fktipopag"));
             c.setValorRecebido(rs.getBigDecimal("valorrecebido"));
             c.setStatus(rs.getLong("fkstatus"));
-            c.setDataHora(rs.getTimestamp("datahora").toLocalDateTime().atZone(ZoneId.of("America/Sao_Paulo")));
+            
+            if(timestamp == null) {
+                c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+            }
+            else{
+                c.setDataHora(timestamp.toLocalDateTime().atZone(ZoneId.of("America/Sao_Paulo")));
 
+            }
+    
             return c;
         }
     }

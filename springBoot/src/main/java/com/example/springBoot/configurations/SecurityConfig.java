@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.
-        requestMatchers("/autenticacao/login", "/api/cadastro-funcionario").permitAll().anyRequest().authenticated()).
+        requestMatchers("/api/login", "/api/funcionarios").permitAll().anyRequest().authenticated()).
         sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
         addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
