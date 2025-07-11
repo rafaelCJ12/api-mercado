@@ -1,4 +1,4 @@
-const baseProd = '/produtos';
+const baseProd = '/api/produtos';
 
 const formP      = document.getElementById('formProduto');
 const codigoP    = document.getElementById('produtoCodigo');
@@ -53,10 +53,10 @@ async function editarProduto(codigo) {
   const res = await fetch(`${baseProd}/${codigo}`);
   const p = await res.json();
   codigoP.value = p.codigo;
-  nomeP.value = p.nome;
-  valorP.value = p.valorunitario;
-  qtdP.value = p.quantidade;
-  massaP.value = p.ehunidademassa;
+  nomeP.value   = p.nome;
+  valorP.value  = p.valorunitario;
+  qtdP.value    = p.quantidade;
+  massaP.value  = p.ehunidademassa;
   btnCancelP.style.display = 'inline-block';
 }
 

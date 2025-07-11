@@ -13,32 +13,17 @@
     <a href="funcionarios.html">Funcionários</a>
     <a href="compras.html">Compras</a>
   </nav>
-
   <div class="container">
     <h2>Funcionários</h2>
-
     <form id="formFuncionario">
       <input type="hidden" id="funcCodigo">
-      <div>
-        <label>Nome:</label>
-        <input type="text" id="funcNome" required>
-      </div>
-      <div>
-        <label>CPF:</label>
-        <input type="text" id="funcCpf" placeholder="000.000.000-00" required>
-      </div>
-      <div>
-        <label>Senha:</label>
-        <input type="password" id="funcSenha" required>
-      </div>
-      <div>
-        <label>Tipo:</label>
-        <input type="number" id="funcTipo" required>
-      </div>
+      <div><label>Nome:</label><input type="text" id="funcNome" required></div>
+      <div><label>CPF:</label><input type="text" id="funcCpf" placeholder="000.000.000-00" required></div>
+      <div><label>Senha:</label><input type="password" id="funcSenha" required></div>
+      <div><label>Tipo:</label><input type="number" id="funcTipo" required></div>
       <button type="submit">Salvar</button>
       <button type="button" id="cancelarFunc" style="display:none">Cancelar</button>
     </form>
-
     <table>
       <thead><tr>
         <th>Código</th><th>Nome</th><th>CPF</th><th>Tipo</th><th>Ações</th>
@@ -46,7 +31,6 @@
       <tbody id="listaFuncionarios"></tbody>
     </table>
   </div>
-
   <script src="js/funcionarios.js"></script>
 </body>
 </html>

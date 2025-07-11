@@ -13,38 +13,22 @@
     <a href="funcionarios.html">Funcionários</a>
     <a href="compras.html">Compras</a>
   </nav>
-
   <div class="container">
     <h2>Compras</h2>
-
     <form id="formCompra">
-      <div>
-        <label>Responsável (código):</label>
-        <input type="number" id="compResponsavel" required>
-      </div>
-      <div>
-        <label>Tipo Pagamento:</label>
-        <input type="number" id="compTipoPagamento" required>
-      </div>
-      <div>
-        <label>Valor Recebido:</label>
-        <input type="number" id="compValorRecebido" step="0.01" required>
-      </div>
-      <div>
-        <label>Status:</label>
-        <input type="number" id="compStatus" required>
-      </div>
+      <div><label>Responsável (código):</label><input type="number" id="compResponsavel" required></div>
+      <div><label>TipoPag**mento**:</label><input type="number" id="compTipoPagamento" required></div>
+      <div><label>ValorRecebido:</label><input type="number" id="compValorRecebido" step="0.01" required></div>
+      <div><label>Status:</label><input type="number" id="compStatus" required></div>
       <button type="submit">Registrar</button>
     </form>
-
     <table>
       <thead><tr>
-        <th>Responsável</th><th>TipoPgto</th><th>ValorRec</th><th>Status</th>
+        <th>Responsável</th><th>TipoPagmento</th><th>ValorRecebido</th><th>Status</th>
       </tr></thead>
       <tbody id="listaCompras"></tbody>
     </table>
   </div>
-
   <script src="js/compras.js"></script>
 </body>
 </html>
