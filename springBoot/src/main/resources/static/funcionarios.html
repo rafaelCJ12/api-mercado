@@ -18,7 +18,7 @@
     <h2>Funcionários</h2>
 
     <form id="formFuncionario">
-      <input type="hidden" id="funcId">
+      <input type="hidden" id="funcCodigo">
       <div>
         <label>Nome:</label>
         <input type="text" id="funcNome" required>
@@ -28,18 +28,22 @@
         <input type="text" id="funcCpf" placeholder="000.000.000-00" required>
       </div>
       <div>
-        <label>E-mail:</label>
-        <input type="email" id="funcEmail" required>
+        <label>Senha:</label>
+        <input type="password" id="funcSenha" required>
       </div>
-      <button type="submit" id="btnFuncSalvar">Salvar</button>
-      <button type="button" id="btnFuncCancelar" style="display:none">Cancelar</button>
+      <div>
+        <label>Tipo:</label>
+        <input type="number" id="funcTipo" required>
+      </div>
+      <button type="submit">Salvar</button>
+      <button type="button" id="cancelarFunc" style="display:none">Cancelar</button>
     </form>
 
     <table>
-      <thead>
-        <tr><th>ID</th><th>Nome</th><th>CPF</th><th>E-mail</th><th>Ações</th></tr>
-      </thead>
-      <tbody id="tbodyFuncionarios"></tbody>
+      <thead><tr>
+        <th>Código</th><th>Nome</th><th>CPF</th><th>Tipo</th><th>Ações</th>
+      </tr></thead>
+      <tbody id="listaFuncionarios"></tbody>
     </table>
   </div>
 

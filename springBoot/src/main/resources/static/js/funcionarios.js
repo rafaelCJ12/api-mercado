@@ -1,74 +1,76 @@
-const funcBase = '/funcionarios';
+const baseFunc = '/funcionarios';
 
-const formF = document.getElementById('formFuncionario');
-const idF   = document.getElementById('funcId');
-const nomeF = document.getElementById('funcNome');
-const cpfF  = document.getElementById('funcCpf');
-const emailF= document.getElementById('funcEmail');
-const tbf   = document.getElementById('tbodyFuncionarios');
-const btnFCancel = document.getElementById('btnFuncCancelar');
+const formF      = document.getElementById('formFuncionario');
+const codigoF    = document.getElementById('funcCodigo');
+const nomeF      = document.getElementById('funcNome');
+const cpfF       = document.getElementById('funcCpf');
+const senhaF     = document.getElementById('funcSenha');
+const tipoF      = document.getElementById('funcTipo');
+const tabelaF    = document.getElementById('listaFuncionarios');
+const btnCancelF = document.getElementById('cancelarFunc');
 
-async function listarF() {
-  const res = await fetch(funcBase);
-  const data = await res.json();
-  tbf.innerHTML = data.map(u => `
+async function carregarFuncionarios() {
+  const res = await fetch(baseFunc);
+  const dados = await res.json();
+  tabelaF.innerHTML = dados.map(u => `
     <tr>
-      <td>${u.id}</td>
+      <td>${u.codigo}</td>
       <td>${u.nome}</td>
       <td>${u.cpf}</td>
-      <td>${u.email}</td>
+      <td>${u.tipo}</td>
       <td>
-        <button onclick="editarF(${u.id})">✏️</button>
-        <button onclick="removerF(${u.id})">🗑️</button>
+        <button onclick="editarFuncionario(${u.codigo})">✏️</button>
+        <button onclick="deletarFuncionario(${u.codigo})">🗑️</button>
       </td>
     </tr>
   `).join('');
 }
 
-async function salvarF(e) {
+async function salvarFuncionario(e) {
   e.preventDefault();
-  const payload = {
+  const dto = {
     nome: nomeF.value,
     cpf: cpfF.value,
-    email: emailF.value
+    senha: senhaF.value,
+    tipo: parseInt(tipoF.value)
   };
-  let method = 'POST', url = funcBase;
-  if (idF.value) {
+  let method = 'POST', url = baseFunc;
+  if (codigoF.value) {
     method = 'PUT';
-    url += `/${idF.value}`;
+    url += `/${codigoF.value}`;
   }
   await fetch(url, {
-    method, headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
+    method,
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(dto)
   });
-  resetF();
-  listarF();
+  resetFuncionario();
+  carregarFuncionarios();
 }
 
-async function editarF(id) {
-  const res = await fetch(`${funcBase}/${id}`);
+async function editarFuncionario(codigo) {
+  const res = await fetch(`${baseFunc}/${codigo}`);
   const u = await res.json();
-  idF.value = u.id;
-  nomeF.value = u.nome;
-  cpfF.value = u.cpf;
-  emailF.value = u.email;
-  btnFCancel.style.display = 'inline-block';
+  codigoF.value = u.codigo;
+  nomeF.value   = u.nome;
+  cpfF.value    = u.cpf;
+  senhaF.value  = u.senha;
+  tipoF.value   = u.tipo;
+  btnCancelF.style.display = 'inline-block';
 }
 
-async function removerF(id) {
-  if (!confirm('Confirmar exclusão?')) return;
-  await fetch(`${funcBase}/${id}`, { method: 'DELETE' });
-  listarF();
+async function deletarFuncionario(codigo) {
+  if (!confirm('Confirma?')) return;
+  await fetch(`${baseFunc}/${codigo}`, { method: 'DELETE' });
+  carregarFuncionarios();
 }
 
-function resetF() {
+function resetFuncionario() {
   formF.reset();
-  idF.value = '';
-  btnFCancel.style.display = 'none';
+  codigoF.value = '';
+  btnCancelF.style.display = 'none';
 }
 
-btnFCancel.addEventListener('click', resetF);
-formF.addEventListener('submit', salvarF);
-
-// inicialização
-listarF();
+btnCancelF.addEventListener('click', resetFuncionario);
+formF.addEventListener('submit', salvarFuncionario);
+window.addEventListener('DOMContentLoaded', carregarFuncionarios);

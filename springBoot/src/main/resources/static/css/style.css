@@ -6,38 +6,22 @@ body {
   color: #333;
 }
 a { text-decoration: none; color: inherit; }
-.container {
-  max-width: 900px; margin: 0 auto; padding: 20px;
-}
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
 h1, h2 { color: #1abc9c; }
+.nav {
+  background-color: #1abc9c; padding: 12px 20px; color: #fff;
+}
+.nav a { margin-right: 16px; color: white; font-weight: 500; }
 button {
-  cursor: pointer;
-  background-color: #1abc9c;
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
+  cursor: pointer; background-color: #1abc9c;
+  border: none; color: white; padding: 8px 12px; border-radius: 4px;
 }
 button:hover { background-color: #17a589; }
 input, select {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;
 }
 table {
   width: 100%; border-collapse: collapse; margin-top: 12px;
 }
-th, td {
-  padding: 8px; border: 1px solid #ddd; text-align: left;
-}
+th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
 th { background-color: #ecf0f1; }
-.nav {
-  background-color: #1abc9c;
-  padding: 12px 20px;
-  color: #fff;
-}
-.nav a {
-  margin-right: 16px;
-  color: white;
-  font-weight: 500;
-}
