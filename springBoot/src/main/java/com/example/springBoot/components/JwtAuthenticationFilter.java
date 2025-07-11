@@ -30,65 +30,57 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    private static final List<String> PUBLIC_PATHS = List.of(
+        "/api/login", "/api/funcionarios"
+    );
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
-
+    @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) 
+    throws ServletException, IOException {
+        
         String path = request.getServletPath();
-        String cpf = "";
-        String token = "";
-        Claims claims = null;
-        String authorizationHeader = null;
-        SecretKey key = null;
-        UsernamePasswordAuthenticationToken authToken = null;
-        List<GrantedAuthority> authorities = null;
 
-        // Ignorar rotas públicas
-        if (path.equals("/api/login") || path.equals("/api/funcionarios")) {
+        // Permitir pré-flight (CORS)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || PUBLIC_PATHS.contains(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
+            String token = authorizationHeader.substring(7);
 
             try {
-                key = Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
+                SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
-                claims = Jwts.parserBuilder()
+                Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
-            
 
-                cpf = claims.getSubject();
+                String cpf = claims.getSubject();
 
                 if (cpf != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    authorities = List.of(new SimpleGrantedAuthority("USER"));
+                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
 
-                    authToken = new UsernamePasswordAuthenticationToken(cpf, 
-                    null, authorities);
-
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            cpf, null, authorities);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-
                 }
 
-            } 
-        
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Erro ao validar o token: " + e.getClass().getSimpleName() + " - " + e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido ou expirado");
                 return;
             }
         }
 
-        // Sempre permita que a requisição continue
         filterChain.doFilter(request, response);
     }
 }
+
