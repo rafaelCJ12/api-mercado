@@ -3,66 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>Compras</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <nav>
-    <a href="produtos.html">Produtos</a>
-    <a href="funcionarios.html">Funcionários</a>
-    <a href="compras.html">Compras</a>
-  </nav>
   <div class="container">
-  <h2>Gerenciar Compras</h2>
+    <h1>Gerenciar Compras</h1>
 
-  <section>
-    <h3>Nova Compra</h3>
-    <form id="compra-create-form">
-      <input type="number" id="comp-responsavel" placeholder="ID do Funcionário" required/>
-      <input type="number" id="comp-tipoPagamento" placeholder="Tipo Pagamento" required/>
-      <input type="number" id="comp-valorRecebido" placeholder="Valor Recebido" step="0.01" required/>
-      <input type="number" id="comp-status" placeholder="Status" required/>
-      <button type="submit">Registrar</button>
+    <!-- Nova compra / alterar status -->
+    <form id="form-compra" class="card">
+      <input type="hidden" id="comp-id"/>
+      <label>Status:
+        <select id="comp-status">
+          <option value="PENDENTE">Pendente</option>
+          <option value="PAGA">Paga</option>
+          <option value="CANCELADA">Cancelada</option>
+        </select>
+      </label>
+      <button type="submit">Salvar</button>
+      <button type="button" id="btn-nova-compra" class="secondary">Nova Compra</button>
     </form>
-  </section>
 
-  <section>
-    <h3>Atualizar Compra</h3>
-    <form id="compra-update-form">
-      <input type="number" id="comp-id-update" placeholder="ID da Compra" required/>
-      <input type="number" id="comp-tipoPagamento-update" placeholder="Tipo Pagamento"/>
-      <input type="number" id="comp-valorRecebido-update" placeholder="Valor Recebido" step="0.01"/>
-      <input type="number" id="comp-status-update" placeholder="Status"/>
-      <button type="submit">Atualizar</button>
-    </form>
-  </section>
+    <!-- Itens da compra -->
+    <section id="itens-compra" class="card hidden">
+      <h2>Itens da Compra <span id="compra-atual"></span></h2>
+      <form id="form-item">
+        <label>Produto:
+          <select id="item-produto"></select>
+        </label>
+        <label>Quantidade: <input type="number" id="item-quant" min="1" value="1"/></label>
+        <button type="submit">Adicionar</button>
+      </form>
 
-  <section>
-    <h3>Listar Todas as Compras</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th><th>Responsável</th><th>Tipo Pgto</th><th>Valor</th><th>Status</th><th>Data/Hora</th>
-        </tr>
-      </thead>
-      <tbody id="compras-tbody"></tbody>
-    </table>
-  </section>
+      <table>
+        <thead><tr><th>Produto</th><th>Qtd</th><th>Preço Unit.</th><th>Subtotal</th><th>Ações</th></tr></thead>
+        <tbody id="lista-itens"></tbody>
+        <tfoot>
+          <tr><td colspan="3" style="text-align:right"><strong>Total:</strong></td><td colspan="2" id="total-compra">R$ 0,00</td></tr>
+        </tfoot>
+      </table>
+    </section>
 
-  <section>
-    <h3>Buscar Compra por ID</h3>
-    <form id="compra-get-form">
-      <input type="number" id="comp-id-get" placeholder="ID da Compra" required/>
-      <button type="submit">Buscar</button>
-    </form>
-    <pre id="compra-detail"></pre>
-  </section>
+    <a href="index.html" class="btn">Voltar</a>
   </div>
-
+  <script src="js/api.js"></script>
   <script src="js/compras.js"></script>
 </body>
 </html>

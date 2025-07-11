@@ -1,84 +1,51 @@
-// Autenticação: checa token e injeta header em todas as requisições
-const token = localStorage.getItem('token');
-if (!token) {
-  window.location.href = 'login.html';
+const listaFun = document.getElementById('lista-func');
+const formFun = document.getElementById('form-func');
+const btnCancelFun = document.getElementById('btn-cancel');
+
+async function carregarFuncs() {
+  const dados = await request('/funcionarios');
+  listaFun.innerHTML = dados.map(f => `
+    <tr>
+      <td>${f.nome}</td>
+      <td>${f.email}</td>
+      <td>${f.role}</td>
+      <td>
+        <button onclick="editarFun(${f.id})">✏️</button>
+        <button onclick="excluirFun(${f.id})">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
 }
-const _origFetch = window.fetch;
-window.fetch = (url, opts = {}) => {
-  opts.headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-    ...opts.headers
-  };
-  return _origFetch(url, opts);
+window.editarFun = async id => {
+  const f = await request(`/funcionarios/${id}`);
+  document.getElementById('func-id').value = f.id;
+  document.getElementById('func-nome').value = f.nome;
+  document.getElementById('func-email').value = f.email;
+  document.getElementById('func-role').value = f.role;
+};
+window.excluirFun = async id => {
+  if (confirm('Excluir funcionário?')) {
+    await request(`/funcionarios/${id}`, { method: 'DELETE' });
+    carregarFuncs();
+  }
 };
 
-// js/funcionarios.js
-
-const API = 'http://localhost:8080/api';
-
-// Criar novo funcionário
-document.getElementById('func-create-form').addEventListener('submit', async e => {
+formFun.addEventListener('submit', async e => {
   e.preventDefault();
-  const nome  = document.getElementById('func-nome').value;
-  const cpf   = document.getElementById('func-cpf').value;
-  const senha = document.getElementById('func-senha').value;
-  const tipo  = parseInt(document.getElementById('func-tipo').value, 10);
-
-  try {
-    const res = await fetch(`${API}/adicionar-novo-funcionario`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, cpf, senha, tipo })
-    });
-    if (!res.ok) throw new Error('Erro ao criar funcionário');
-    alert('Funcionário criado com sucesso!');
-    e.target.reset();
-  } catch (err) {
-    alert(err.message);
+  const id = document.getElementById('func-id').value;
+  const body = {
+    nome: document.getElementById('func-nome').value,
+    email: document.getElementById('func-email').value,
+    role: document.getElementById('func-role').value
+  };
+  if (id) {
+    await request(`/funcionarios/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+  } else {
+    await request('/funcionarios', { method: 'POST', body: JSON.stringify(body) });
   }
+  formFun.reset();
+  carregarFuncs();
 });
+btnCancelFun.addEventListener('click', _ => formFun.reset());
 
-// Login de funcionário
-document.getElementById('func-login-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const cpf   = document.getElementById('login-cpf').value;
-  const senha = document.getElementById('login-senha').value;
-
-  try {
-    const res = await fetch(`${API}/login`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: '', cpf, senha, tipo: 0 })
-    });
-    const text = await res.text();
-    document.getElementById('login-result').innerText = text;
-  } catch (err) {
-    alert('Erro no login: ' + err.message);
-  }
-});
-
-// Atualizar dados do funcionário
-document.getElementById('func-update-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const id    = parseInt(document.getElementById('func-id-update').value, 10);
-  const nome  = document.getElementById('func-nome-update').value;
-  const cpf   = document.getElementById('func-cpf-update').value;
-  const senha = document.getElementById('func-senha-update').value;
-  const tipo  = parseInt(document.getElementById('func-tipo-update').value || '0', 10);
-
-  const payload = { nome, cpf, senha, tipo };
-
-  try {
-    const res = await fetch(`${API}/atualizar-dados/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('Erro ao atualizar dados');
-    alert('Dados atualizados com sucesso!');
-    e.target.reset();
-  } catch (err) {
-    alert(err.message);
-  }
-});
+carregarFuncs();

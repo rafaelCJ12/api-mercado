@@ -3,81 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Produtos</title>
-
-  <!-- Google Fonts Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- CSS principal -->
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-
   <div class="container">
-
-    <!-- Navegação -->
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="produtos.html" class="active">Produtos</a>
-      <a href="funcionarios.html">Funcionários</a>
-      <a href="compras.html">Compras</a>
-    </nav>
-
-    <!-- Título -->
-    <header>
-      <h1>Gerenciar Produtos</h1>
-    </header>
-
-    <!-- Formulário de cadastro/edição -->
-    <form id="produto-form">
-      <input type="hidden" id="produto-id"/>
-
-      <div class="form-group">
-        <label for="produto-nome">Nome</label>
-        <input type="text" id="produto-nome" placeholder="Digite o nome do produto" required>
-      </div>
-
-      <div class="form-group">
-        <label for="produto-valorunitario">Valor Unitário</label>
-        <input type="number" id="produto-valorunitario" placeholder="0.00" step="0.01" required>
-      </div>
-
-      <div class="form-group">
-        <label for="produto-quantidade">Quantidade</label>
-        <input type="number" id="produto-quantidade" placeholder="0" step="0.01" required>
-      </div>
-
-      <div class="form-group inline">
-        <input type="checkbox" id="produto-ehunidademassa">
-        <label for="produto-ehunidademassa">Unidade de Massa</label>
-      </div>
-
-      <div class="form-group">
-        <button type="submit">Salvar</button>
-        <button type="button" id="produto-form-cancel">Cancelar</button>
-      </div>
+    <h1>Gerenciar Produtos</h1>
+    <form id="form-prod" class="card">
+      <input type="hidden" id="prod-id"/>
+      <label>Nome: <input type="text" id="prod-nome" required/></label>
+      <label>Preço: <input type="number" id="prod-preco" step="0.01" required/></label>
+      <label>Estoque: <input type="number" id="prod-estoque" required/></label>
+      <button type="submit">Salvar</button>
+      <button type="button" id="btn-cancel-prod" class="secondary">Cancelar</button>
     </form>
 
-    <!-- Tabela de listagem -->
     <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Valor</th>
-          <th>Quantidade</th>
-          <th>Unid. Massa</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="produtos-tbody">
-        <!-- preenchido dinamicamente por produtos.js -->
-      </tbody>
+      <thead><tr><th>Nome</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead>
+      <tbody id="lista-prod"></tbody>
     </table>
 
-  </div><!-- /.container -->
-
+    <a href="index.html" class="btn">Voltar</a>
+  </div>
+  <script src="js/api.js"></script>
   <script src="js/produtos.js"></script>
 </body>
 </html>

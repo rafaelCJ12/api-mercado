@@ -1,105 +1,100 @@
-// Autenticação: checa token e injeta header em todas as requisições
-const token = localStorage.getItem('token');
-if (!token) {
-  window.location.href = 'login.html';
+const formCompra = document.getElementById('form-compra');
+const btnNovaCompra = document.getElementById('btn-nova-compra');
+const formItem = document.getElementById('form-item');
+const secItens = document.getElementById('itens-compra');
+const selProduto = document.getElementById('item-produto');
+const listaItens = document.getElementById('lista-itens');
+const totalCompra = document.getElementById('total-compra');
+const compLabel = document.getElementById('compra-atual');
+
+let compraAtual = null;
+
+async function carregarProdutosSelect() {
+  const prods = await request('/produtos');
+  selProduto.innerHTML = prods.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
 }
-const _origFetch = window.fetch;
-window.fetch = (url, opts = {}) => {
-  opts.headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-    ...opts.headers
+
+async function novaCompra() {
+  const c = await request('/compras', { method: 'POST' });
+  compraAtual = c;
+  mostrarItens();
+}
+
+async function carregarCompra(id) {
+  compraAtual = await request(`/compras/${id}`);
+  mostrarItens();
+}
+
+function mostrarItens() {
+  if (!compraAtual) return;
+  compLabel.textContent = `#${compraAtual.id}`;
+  formCompra['comp-id'].value = compraAtual.id;
+  formCompra['comp-status'].value = compraAtual.status;
+  secItens.classList.remove('hidden');
+  listaItens.innerHTML = compraAtual.itens.map(item => `
+    <tr>
+      <td>${item.produto.nome}</td>
+      <td>${item.quantidade}</td>
+      <td>R$ ${item.produto.preco.toFixed(2)}</td>
+      <td>R$ ${(item.quantidade * item.produto.preco).toFixed(2)}</td>
+      <td>
+        <button onclick="alterarItem(${item.id})">✏️</button>
+        <button onclick="removerItem(${item.id})">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+  const total = compraAtual.itens.reduce((sum, i) => sum + i.quantidade * i.produto.preco, 0);
+  totalCompra.textContent = `R$ ${total.toFixed(2)}`;
+}
+
+formCompra.addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = formCompra['comp-id'].value;
+  const status = formCompra['comp-status'].value;
+  await request(`/compras/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status })
+  });
+  compraAtual.status = status;
+  alert('Status atualizado.');
+});
+
+btnNovaCompra.addEventListener('click', _ => novaCompra());
+
+formItem.addEventListener('submit', async e => {
+  e.preventDefault();
+  const body = {
+    produtoId: parseInt(selProduto.value, 10),
+    quantidade: parseInt(document.getElementById('item-quant').value, 10)
   };
-  return _origFetch(url, opts);
+  await request(`/compras/${compraAtual.id}/itens`, {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+  compraAtual = await request(`/compras/${compraAtual.id}`);
+  mostrarItens();
+});
+
+window.removerItem = async itemId => {
+  if (!confirm('Remover este item?')) return;
+  await request(`/compras/${compraAtual.id}/itens/${itemId}`, { method: 'DELETE' });
+  compraAtual = await request(`/compras/${compraAtual.id}`);
+  mostrarItens();
 };
 
-// js/compras.js
+window.alterarItem = async itemId => {
+  const novaQtd = +prompt('Nova quantidade:');
+  if (!novaQtd || novaQtd < 1) return;
+  await request(`/compras/${compraAtual.id}/itens/${itemId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ quantidade: novaQtd })
+  });
+  compraAtual = await request(`/compras/${compraAtual.id}`);
+  mostrarItens();
+};
 
-const API = 'http://localhost:8080/api';
-
-// Buscar e renderizar todas as compras
-async function fetchCompras() {
-  try {
-    const res = await fetch(`${API}/compras`);
-    if (!res.ok) throw new Error('Erro ao listar compras');
-    const list = await res.json();
-    const tbody = document.getElementById('compras-tbody');
-    tbody.innerHTML = '';
-    list.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${c.codigo}</td>
-        <td>${c.responsavel}</td>
-        <td>${c.tipoPagamento}</td>
-        <td>${c.valorRecebido.toFixed(2)}</td>
-        <td>${c.status}</td>
-        <td>${new Date(c.dataHora).toLocaleString('pt-BR')}</td>`;
-      tbody.appendChild(tr);
-    });
-  } catch (err) {
-    alert(err.message);
-  }
-}
-
-// Registrar nova compra
-document.getElementById('compra-create-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const responsavel   = parseInt(document.getElementById('comp-responsavel').value, 10);
-  const tipoPagamento = parseInt(document.getElementById('comp-tipoPagamento').value, 10);
-  const valorRecebido = parseFloat(document.getElementById('comp-valorRecebido').value);
-  const status        = parseInt(document.getElementById('comp-status').value, 10);
-
-  try {
-    const res = await fetch(`${API}/criar-nova-compra`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ responsavel, tipoPagmento: tipoPagamento, valorRecebido, status })
-    });
-    if (!res.ok) throw new Error('Erro ao registrar compra');
-    alert('Compra registrada com sucesso!');
-    e.target.reset();
-    fetchCompras();
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-// Atualizar compra existente
-document.getElementById('compra-update-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const id             = parseInt(document.getElementById('comp-id-update').value, 10);
-  const tipoPagamento  = parseInt(document.getElementById('comp-tipoPagamento-update').value || '0', 10);
-  const valorRecebido  = parseFloat(document.getElementById('comp-valorRecebido-update').value || '0');
-  const status         = parseInt(document.getElementById('comp-status-update').value || '0', 10);
-
-  try {
-    const res = await fetch(`${API}/atualiza-compra/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ responsavel: 0, tipoPagmento: tipoPagamento, valorRecebido, status })
-    });
-    if (!res.ok) throw new Error('Erro ao atualizar compra');
-    alert('Compra atualizada com sucesso!');
-    e.target.reset();
-    fetchCompras();
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-// Buscar compra por ID
-document.getElementById('compra-get-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const id = parseInt(document.getElementById('comp-id-get').value, 10);
-  try {
-    const res = await fetch(`${API}/compra/${id}`);
-    if (!res.ok) throw new Error('Compra não encontrada');
-    const obj = await res.json();
-    document.getElementById('compra-detail').textContent = JSON.stringify(obj, null, 2);
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-// Inicializa a lista de compras ao carregar
-window.addEventListener('load', fetchCompras);
+// inicia
+(async () => {
+  await carregarProdutosSelect();
+  // se quiser listar últimas compras, poderia chamar uma API aqui
+})();

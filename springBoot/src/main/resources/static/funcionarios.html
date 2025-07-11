@@ -3,56 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Funcionários</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <nav>
-    <a href="produtos.html">Produtos</a>
-    <a href="funcionarios.html">Funcionários</a>
-    <a href="compras.html">Compras</a>
-  </nav>
-
   <div class="container">
-    <h2>Gerenciar Funcionários</h2>
+    <h1>Gerenciar Funcionários</h1>
+    <!-- Formulário -->
+    <form id="form-func" class="card">
+      <input type="hidden" id="func-id"/>
+      <label>Nome: <input type="text" id="func-nome" required/></label>
+      <label>Email: <input type="email" id="func-email" required/></label>
+      <label>Função: <input type="text" id="func-role" required/></label>
+      <button type="submit">Salvar</button>
+      <button type="button" id="btn-cancel" class="secondary">Cancelar</button>
+    </form>
 
-    <section>
-      <h3>Adicionar Funcionário</h3>
-      <form id="func-create-form">
-        <input type="text" id="func-nome" placeholder="Nome" required/>
-        <input type="text" id="func-cpf" placeholder="CPF" required/>
-        <input type="password" id="func-senha" placeholder="Senha" required/>
-        <input type="number" id="func-tipo" placeholder="Tipo" required/>
-        <button type="submit">Salvar</button>
-      </form>
-    </section>
+    <!-- Lista -->
+    <table>
+      <thead><tr><th>Nome</th><th>Email</th><th>Função</th><th>Ações</th></tr></thead>
+      <tbody id="lista-func"></tbody>
+    </table>
 
-      <section>
-      <h3>Login</h3>
-      <form id="func-login-form">
-        <input type="text" id="login-cpf" placeholder="CPF" required/>
-        <input type="password" id="login-senha" placeholder="Senha" required/>
-        <button type="submit">Login</button>
-      </form>
-      <div id="login-result"></div>
-    </section>
-
-    <section>
-      <h3>Atualizar Dados</h3>
-      <form id="func-update-form">
-        <input type="number" id="func-id-update" placeholder="ID do Funcionário" required/>
-        <input type="text" id="func-nome-update" placeholder="Novo Nome"/>
-        <input type="text" id="func-cpf-update" placeholder="Novo CPF"/>
-        <input type="password" id="func-senha-update" placeholder="Nova Senha"/>
-        <input type="number" id="func-tipo-update" placeholder="Novo Tipo"/>
-        <button type="submit">Atualizar</button>
-      </form>
-    </section>
+    <a href="index.html" class="btn">Voltar</a>
   </div>
-  
+  <script src="js/api.js"></script>
   <script src="js/funcionarios.js"></script>
 </body>
 </html>
