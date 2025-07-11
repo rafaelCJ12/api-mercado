@@ -3,29 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <title>Produtos</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <link rel="stylesheet" href="css/style.css"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="produtos.html">Produtos</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="compras.html">Compras</a>
+  </nav>
+
   <div class="container">
-    <h1>Gerenciar Produtos</h1>
-    <form id="form-prod" class="card">
-      <input type="hidden" id="prod-id"/>
-      <label>Nome: <input type="text" id="prod-nome" required/></label>
-      <label>Preço: <input type="number" id="prod-preco" step="0.01" required/></label>
-      <label>Estoque: <input type="number" id="prod-estoque" required/></label>
-      <button type="submit">Salvar</button>
-      <button type="button" id="btn-cancel-prod" class="secondary">Cancelar</button>
+    <h2>Produtos</h2>
+
+    <form id="formProduto">
+      <input type="hidden" id="produtoId">
+      <div>
+        <label>Nome:</label>
+        <input type="text" id="nome" required>
+      </div>
+      <div>
+        <label>Preço:</label>
+        <input type="number" id="preco" step="0.01" required>
+      </div>
+      <div>
+        <label>Quantidade:</label>
+        <input type="number" id="quantidade" step="1" required>
+      </div>
+      <button type="submit" id="btnSalvar">Salvar</button>
+      <button type="button" id="btnCancelar" style="display:none">Cancelar</button>
     </form>
 
     <table>
-      <thead><tr><th>Nome</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead>
-      <tbody id="lista-prod"></tbody>
+      <thead>
+        <tr><th>ID</th><th>Nome</th><th>Preço</th><th>Qtd</th><th>Ações</th></tr>
+      </thead>
+      <tbody id="tbodyProdutos"></tbody>
     </table>
-
-    <a href="index.html" class="btn">Voltar</a>
   </div>
-  <script src="js/api.js"></script>
+
   <script src="js/produtos.js"></script>
 </body>
 </html>

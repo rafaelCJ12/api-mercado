@@ -1,51 +1,74 @@
-const listaFun = document.getElementById('lista-func');
-const formFun = document.getElementById('form-func');
-const btnCancelFun = document.getElementById('btn-cancel');
+const funcBase = '/funcionarios';
 
-async function carregarFuncs() {
-  const dados = await request('/funcionarios');
-  listaFun.innerHTML = dados.map(f => `
+const formF = document.getElementById('formFuncionario');
+const idF   = document.getElementById('funcId');
+const nomeF = document.getElementById('funcNome');
+const cpfF  = document.getElementById('funcCpf');
+const emailF= document.getElementById('funcEmail');
+const tbf   = document.getElementById('tbodyFuncionarios');
+const btnFCancel = document.getElementById('btnFuncCancelar');
+
+async function listarF() {
+  const res = await fetch(funcBase);
+  const data = await res.json();
+  tbf.innerHTML = data.map(u => `
     <tr>
-      <td>${f.nome}</td>
-      <td>${f.email}</td>
-      <td>${f.role}</td>
+      <td>${u.id}</td>
+      <td>${u.nome}</td>
+      <td>${u.cpf}</td>
+      <td>${u.email}</td>
       <td>
-        <button onclick="editarFun(${f.id})">✏️</button>
-        <button onclick="excluirFun(${f.id})">🗑️</button>
+        <button onclick="editarF(${u.id})">✏️</button>
+        <button onclick="removerF(${u.id})">🗑️</button>
       </td>
     </tr>
   `).join('');
 }
-window.editarFun = async id => {
-  const f = await request(`/funcionarios/${id}`);
-  document.getElementById('func-id').value = f.id;
-  document.getElementById('func-nome').value = f.nome;
-  document.getElementById('func-email').value = f.email;
-  document.getElementById('func-role').value = f.role;
-};
-window.excluirFun = async id => {
-  if (confirm('Excluir funcionário?')) {
-    await request(`/funcionarios/${id}`, { method: 'DELETE' });
-    carregarFuncs();
-  }
-};
 
-formFun.addEventListener('submit', async e => {
+async function salvarF(e) {
   e.preventDefault();
-  const id = document.getElementById('func-id').value;
-  const body = {
-    nome: document.getElementById('func-nome').value,
-    email: document.getElementById('func-email').value,
-    role: document.getElementById('func-role').value
+  const payload = {
+    nome: nomeF.value,
+    cpf: cpfF.value,
+    email: emailF.value
   };
-  if (id) {
-    await request(`/funcionarios/${id}`, { method: 'PUT', body: JSON.stringify(body) });
-  } else {
-    await request('/funcionarios', { method: 'POST', body: JSON.stringify(body) });
+  let method = 'POST', url = funcBase;
+  if (idF.value) {
+    method = 'PUT';
+    url += `/${idF.value}`;
   }
-  formFun.reset();
-  carregarFuncs();
-});
-btnCancelFun.addEventListener('click', _ => formFun.reset());
+  await fetch(url, {
+    method, headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  resetF();
+  listarF();
+}
 
-carregarFuncs();
+async function editarF(id) {
+  const res = await fetch(`${funcBase}/${id}`);
+  const u = await res.json();
+  idF.value = u.id;
+  nomeF.value = u.nome;
+  cpfF.value = u.cpf;
+  emailF.value = u.email;
+  btnFCancel.style.display = 'inline-block';
+}
+
+async function removerF(id) {
+  if (!confirm('Confirmar exclusão?')) return;
+  await fetch(`${funcBase}/${id}`, { method: 'DELETE' });
+  listarF();
+}
+
+function resetF() {
+  formF.reset();
+  idF.value = '';
+  btnFCancel.style.display = 'none';
+}
+
+btnFCancel.addEventListener('click', resetF);
+formF.addEventListener('submit', salvarF);
+
+// inicialização
+listarF();

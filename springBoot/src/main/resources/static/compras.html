@@ -3,50 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Compras</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <link rel="stylesheet" href="css/style.css"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Gerenciar Compras</h1>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="produtos.html">Produtos</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="compras.html">Compras</a>
+  </nav>
 
-    <!-- Nova compra / alterar status -->
-    <form id="form-compra" class="card">
-      <input type="hidden" id="comp-id"/>
-      <label>Status:
-        <select id="comp-status">
-          <option value="PENDENTE">Pendente</option>
-          <option value="PAGA">Paga</option>
-          <option value="CANCELADA">Cancelada</option>
+  <div class="container">
+    <h2>Compras</h2>
+
+    <form id="formCompra">
+      <input type="hidden" id="compId">
+      <div>
+        <label>Produto ID:</label>
+        <input type="number" id="compProdId" required>
+      </div>
+      <div>
+        <label>Quantidade:</label>
+        <input type="number" id="compQtd" required>
+      </div>
+      <div>
+        <label>Tipo Pagamento:</label>
+        <select id="compTipo">
+          <option value="1">À vista</option>
+          <option value="2">Parcelado</option>
         </select>
-      </label>
-      <button type="submit">Salvar</button>
-      <button type="button" id="btn-nova-compra" class="secondary">Nova Compra</button>
+      </div>
+      <button type="submit" id="btnCompSalvar">Salvar</button>
+      <button type="button" id="btnCompCancelar" style="display:none">Cancelar</button>
     </form>
 
-    <!-- Itens da compra -->
-    <section id="itens-compra" class="card hidden">
-      <h2>Itens da Compra <span id="compra-atual"></span></h2>
-      <form id="form-item">
-        <label>Produto:
-          <select id="item-produto"></select>
-        </label>
-        <label>Quantidade: <input type="number" id="item-quant" min="1" value="1"/></label>
-        <button type="submit">Adicionar</button>
-      </form>
-
-      <table>
-        <thead><tr><th>Produto</th><th>Qtd</th><th>Preço Unit.</th><th>Subtotal</th><th>Ações</th></tr></thead>
-        <tbody id="lista-itens"></tbody>
-        <tfoot>
-          <tr><td colspan="3" style="text-align:right"><strong>Total:</strong></td><td colspan="2" id="total-compra">R$ 0,00</td></tr>
-        </tfoot>
-      </table>
-    </section>
-
-    <a href="index.html" class="btn">Voltar</a>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Produto ID</th><th>Qtd</th><th>Tipo</th><th>Ações</th></tr>
+      </thead>
+      <tbody id="tbodyCompras"></tbody>
+    </table>
   </div>
-  <script src="js/api.js"></script>
+
   <script src="js/compras.js"></script>
 </body>
 </html>
