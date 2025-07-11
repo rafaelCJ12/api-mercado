@@ -1,14 +1,16 @@
 // Autenticação: checa token e injeta header em todas as requisições
 const token = localStorage.getItem('token');
-if (!token) window.location.href = 'login.html';
-const originalFetch = window.fetch;
-window.fetch = (url, options = {}) => {
-  options.headers = {
-    ...(options.headers || {}),
+if (!token) {
+  window.location.href = 'login.html';
+}
+const _origFetch = window.fetch;
+window.fetch = (url, opts = {}) => {
+  opts.headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    'Authorization': `Bearer ${token}`,
+    ...opts.headers
   };
-  return originalFetch(url, options);
+  return _origFetch(url, opts);
 };
 
 // js/produtos.js
