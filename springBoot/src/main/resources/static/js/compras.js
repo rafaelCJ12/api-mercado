@@ -1,100 +1,74 @@
-const formCompra = document.getElementById('form-compra');
-const btnNovaCompra = document.getElementById('btn-nova-compra');
-const formItem = document.getElementById('form-item');
-const secItens = document.getElementById('itens-compra');
-const selProduto = document.getElementById('item-produto');
-const listaItens = document.getElementById('lista-itens');
-const totalCompra = document.getElementById('total-compra');
-const compLabel = document.getElementById('compra-atual');
+const compBase = '/compras';
 
-let compraAtual = null;
+const formC = document.getElementById('formCompra');
+const idC   = document.getElementById('compId');
+const prodC = document.getElementById('compProdId');
+const qtdC  = document.getElementById('compQtd');
+const tipoC = document.getElementById('compTipo');
+const tbc   = document.getElementById('tbodyCompras');
+const btnCCancel = document.getElementById('btnCompCancelar');
 
-async function carregarProdutosSelect() {
-  const prods = await request('/produtos');
-  selProduto.innerHTML = prods.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
-}
-
-async function novaCompra() {
-  const c = await request('/compras', { method: 'POST' });
-  compraAtual = c;
-  mostrarItens();
-}
-
-async function carregarCompra(id) {
-  compraAtual = await request(`/compras/${id}`);
-  mostrarItens();
-}
-
-function mostrarItens() {
-  if (!compraAtual) return;
-  compLabel.textContent = `#${compraAtual.id}`;
-  formCompra['comp-id'].value = compraAtual.id;
-  formCompra['comp-status'].value = compraAtual.status;
-  secItens.classList.remove('hidden');
-  listaItens.innerHTML = compraAtual.itens.map(item => `
+async function listarC() {
+  const res = await fetch(compBase);
+  const data = await res.json();
+  tbc.innerHTML = data.map(c => `
     <tr>
-      <td>${item.produto.nome}</td>
-      <td>${item.quantidade}</td>
-      <td>R$ ${item.produto.preco.toFixed(2)}</td>
-      <td>R$ ${(item.quantidade * item.produto.preco).toFixed(2)}</td>
+      <td>${c.id}</td>
+      <td>${c.produtoId}</td>
+      <td>${c.quantidade}</td>
+      <td>${c.tipoPagamento}</td>
       <td>
-        <button onclick="alterarItem(${item.id})">✏️</button>
-        <button onclick="removerItem(${item.id})">🗑️</button>
+        <button onclick="editarC(${c.id})">✏️</button>
+        <button onclick="removerC(${c.id})">🗑️</button>
       </td>
     </tr>
   `).join('');
-  const total = compraAtual.itens.reduce((sum, i) => sum + i.quantidade * i.produto.preco, 0);
-  totalCompra.textContent = `R$ ${total.toFixed(2)}`;
 }
 
-formCompra.addEventListener('submit', async e => {
+async function salvarC(e) {
   e.preventDefault();
-  const id = formCompra['comp-id'].value;
-  const status = formCompra['comp-status'].value;
-  await request(`/compras/${id}/status`, {
-    method: 'PUT',
-    body: JSON.stringify({ status })
-  });
-  compraAtual.status = status;
-  alert('Status atualizado.');
-});
-
-btnNovaCompra.addEventListener('click', _ => novaCompra());
-
-formItem.addEventListener('submit', async e => {
-  e.preventDefault();
-  const body = {
-    produtoId: parseInt(selProduto.value, 10),
-    quantidade: parseInt(document.getElementById('item-quant').value, 10)
+  const payload = {
+    produtoId: parseInt(prodC.value),
+    quantidade: parseInt(qtdC.value),
+    tipoPagamento: parseInt(tipoC.value)
   };
-  await request(`/compras/${compraAtual.id}/itens`, {
-    method: 'POST',
-    body: JSON.stringify(body)
+  let method = 'POST', url = compBase;
+  if (idC.value) {
+    method = 'PUT';
+    url += `/${idC.value}`;
+  }
+  await fetch(url, {
+    method, headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
   });
-  compraAtual = await request(`/compras/${compraAtual.id}`);
-  mostrarItens();
-});
+  resetC();
+  listarC();
+}
 
-window.removerItem = async itemId => {
-  if (!confirm('Remover este item?')) return;
-  await request(`/compras/${compraAtual.id}/itens/${itemId}`, { method: 'DELETE' });
-  compraAtual = await request(`/compras/${compraAtual.id}`);
-  mostrarItens();
-};
+async function editarC(id) {
+  const res = await fetch(`${compBase}/${id}`);
+  const c = await res.json();
+  idC.value = c.id;
+  prodC.value = c.produtoId;
+  qtdC.value = c.quantidade;
+  tipoC.value = c.tipoPagamento;
+  btnCCancel.style.display = 'inline-block';
+}
 
-window.alterarItem = async itemId => {
-  const novaQtd = +prompt('Nova quantidade:');
-  if (!novaQtd || novaQtd < 1) return;
-  await request(`/compras/${compraAtual.id}/itens/${itemId}`, {
-    method: 'PUT',
-    body: JSON.stringify({ quantidade: novaQtd })
-  });
-  compraAtual = await request(`/compras/${compraAtual.id}`);
-  mostrarItens();
-};
+async function removerC(id) {
+  if (!confirm('Confirmar exclusão?')) return;
+  await fetch(`${compBase}/${id}`, { method: 'DELETE' });
+  listarC();
+}
 
-// inicia
-(async () => {
-  await carregarProdutosSelect();
-  // se quiser listar últimas compras, poderia chamar uma API aqui
-})();
+function resetC() {
+  formC.reset();
+  idC.value = '';
+  btnCCancel.style.display = 'none';
+}
+
+btnCCancel.addEventListener('click', resetC);
+formC.addEventListener('submit', salvarC);
+
+// inicialização
+listarC();

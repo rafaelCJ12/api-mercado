@@ -1,51 +1,74 @@
-const listaProd = document.getElementById('lista-prod');
-const formProd = document.getElementById('form-prod');
-const btnCancelProd = document.getElementById('btn-cancel-prod');
+const apiBase = '/produtos';
 
-async function carregarProds() {
-  const dados = await request('/produtos');
-  listaProd.innerHTML = dados.map(p => `
+const form = document.getElementById('formProduto');
+const idField = document.getElementById('produtoId');
+const nomeField = document.getElementById('nome');
+const precoField = document.getElementById('preco');
+const qtdField = document.getElementById('quantidade');
+const tbody = document.getElementById('tbodyProdutos');
+const btnCancelar = document.getElementById('btnCancelar');
+
+async function listar() {
+  const res = await fetch(apiBase);
+  const dados = await res.json();
+  tbody.innerHTML = dados.map(p => `
     <tr>
+      <td>${p.id}</td>
       <td>${p.nome}</td>
-      <td>R$ ${p.preco.toFixed(2)}</td>
-      <td>${p.estoque}</td>
+      <td>${p.preco.toFixed(2)}</td>
+      <td>${p.quantidade}</td>
       <td>
-        <button onclick="editarProd(${p.id})">✏️</button>
-        <button onclick="excluirProd(${p.id})">🗑️</button>
+        <button onclick="editar(${p.id})">✏️</button>
+        <button onclick="remover(${p.id})">🗑️</button>
       </td>
     </tr>
   `).join('');
 }
-window.editarProd = async id => {
-  const p = await request(`/produtos/${id}`);
-  document.getElementById('prod-id').value = p.id;
-  document.getElementById('prod-nome').value = p.nome;
-  document.getElementById('prod-preco').value = p.preco;
-  document.getElementById('prod-estoque').value = p.estoque;
-};
-window.excluirProd = async id => {
-  if (confirm('Excluir produto?')) {
-    await request(`/produtos/${id}`, { method: 'DELETE' });
-    carregarProds();
-  }
-};
 
-formProd.addEventListener('submit', async e => {
+async function salvar(e) {
   e.preventDefault();
-  const id = document.getElementById('prod-id').value;
-  const body = {
-    nome: document.getElementById('prod-nome').value,
-    preco: parseFloat(document.getElementById('prod-preco').value),
-    estoque: parseInt(document.getElementById('prod-estoque').value, 10)
+  const payload = {
+    nome: nomeField.value,
+    preco: parseFloat(precoField.value),
+    quantidade: parseInt(qtdField.value)
   };
-  if (id) {
-    await request(`/produtos/${id}`, { method: 'PUT', body: JSON.stringify(body) });
-  } else {
-    await request('/produtos', { method: 'POST', body: JSON.stringify(body) });
+  let method = 'POST', url = apiBase;
+  if (idField.value) {
+    method = 'PUT';
+    url += `/${idField.value}`;
   }
-  formProd.reset();
-  carregarProds();
-});
-btnCancelProd.addEventListener('click', _ => formProd.reset());
+  await fetch(url, {
+    method, headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  resetForm();
+  listar();
+}
 
-carregarProds();
+async function editar(id) {
+  const res = await fetch(`${apiBase}/${id}`);
+  const p = await res.json();
+  idField.value = p.id;
+  nomeField.value = p.nome;
+  precoField.value = p.preco;
+  qtdField.value = p.quantidade;
+  btnCancelar.style.display = 'inline-block';
+}
+
+async function remover(id) {
+  if (!confirm('Confirmar exclusão?')) return;
+  await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
+  listar();
+}
+
+function resetForm() {
+  form.reset();
+  idField.value = '';
+  btnCancelar.style.display = 'none';
+}
+
+btnCancelar.addEventListener('click', resetForm);
+form.addEventListener('submit', salvar);
+
+// inicialização
+listar();
