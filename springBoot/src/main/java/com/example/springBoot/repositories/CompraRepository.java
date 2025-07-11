@@ -3,9 +3,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.hibernate.type.descriptor.jdbc.TimeAsTimestampWithTimeZoneJdbcType;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -40,31 +42,31 @@ public class CompraRepository {
     public void salvaCompra(CompraModel c) throws DataAccessException{
         String consulta = "insert into compras(fkfuncresponsavel, valorrecebido, fktipopag, fkstatus, datahora) values(?, ?, ?, ?, ?)";
 
-        this.jdbcTemplate.update(consulta, c.getResponsavel(), c.getValorRecebido(), c.getTipoPagamento(), c.getStatus(), c.getDataHora());
+        this.jdbcTemplate.update(consulta, c.getResponsavel(), c.getValorRecebido(), c.getTipoPagamento(), c.getStatus(), c.getDataHora().toOffsetDateTime());
     }
 
     public boolean atualizaValorRecebido(CompraModel c) throws DataAccessException {
-        String consulta = "update compras set valorrecebido = ? where compraid = ?";
+        String consulta = "update compras set valorrecebido = ?, datahora = ? where compraid = ?";
 
-        return this.jdbcTemplate.update(consulta, c.getValorRecebido(), c.getCodigo()) > 0;
+        return this.jdbcTemplate.update(consulta, c.getValorRecebido(), c.getDataHora().toOffsetDateTime(), c.getCodigo()) > 0;
     }
 
     public boolean atualizaTipoPagamento(CompraModel c) throws DataAccessException {
-        String consulta = "update compras set fktipopag = ? where compraid = ?";
+        String consulta = "update compras set fktipopag = ?, datahora = ? where compraid = ?";
 
-        return this.jdbcTemplate.update(consulta, c.getValorRecebido(), c.getCodigo()) > 0;
+        return this.jdbcTemplate.update(consulta, c.getTipoPagamento(), c.getDataHora().toOffsetDateTime(), c.getCodigo()) > 0;
     }
 
     public boolean atualizaStatus(CompraModel c) throws DataAccessException {
-        String consulta = "update compras set fkstatus = ? where compraid = ?";
+        String consulta = "update compras set fkstatus = ?, datahora = ? where compraid = ?";
 
-        return this.jdbcTemplate.update(consulta, c.getStatus(), c.getCodigo()) > 0;
+        return this.jdbcTemplate.update(consulta, c.getStatus(), c.getDataHora().toOffsetDateTime(), c.getCodigo()) > 0;
     }
 
     public boolean atualizaDataHora(CompraModel c) throws DataAccessException {
         String consulta = "update compras set datahora = ? where compraid = ?";
 
-        return this.jdbcTemplate.update(consulta, c.getDataHora(), c.getCodigo()) > 0;
+        return this.jdbcTemplate.update(consulta, c.getDataHora().toOffsetDateTime(), c.getCodigo()) > 0;
     }
 
     public boolean deletar(Long id) throws DataAccessException{
@@ -79,7 +81,7 @@ public class CompraRepository {
     private static class CompraRowMapper implements RowMapper<CompraModel> {
         public CompraModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             CompraModel c = new CompraModel();
-            Timestamp timestamp = rs.getTimestamp("datahora");
+            OffsetDateTime offsetDateTime = rs.getObject("datahora", OffsetDateTime.class);
             
             c.setCodigo(rs.getLong("compraid"));
             c.setResponsavel(rs.getLong("fkfuncresponsavel"));
@@ -87,11 +89,11 @@ public class CompraRepository {
             c.setValorRecebido(rs.getBigDecimal("valorrecebido"));
             c.setStatus(rs.getLong("fkstatus"));
             
-            if(timestamp == null) {
+            if(offsetDateTime == null) {
                 c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
             }
             else{
-                c.setDataHora(timestamp.toLocalDateTime().atZone(ZoneId.of("America/Sao_Paulo")));
+                c.setDataHora(offsetDateTime.atZoneSameInstant(ZoneId.of("America/Sao_Paulo")));
 
             }
     

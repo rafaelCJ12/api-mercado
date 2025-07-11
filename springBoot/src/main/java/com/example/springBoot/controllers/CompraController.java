@@ -61,8 +61,8 @@ public class CompraController {
         return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
     }
 
-    @PutMapping("/compra/{id}")
-    public ResponseEntity<CompraDto> atualizaCompra(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
+    @PutMapping("/compra-status/{id}")
+    public ResponseEntity<CompraDto> atualizaStatus(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
         CompraModel c = this.compraService.buscaCompraPorId(id);
 
         if(c == null) {
@@ -72,7 +72,46 @@ public class CompraController {
         c = cdto.compraDtoToModel();
         c.setCodigo(id);
 
-        if(this.compraService.atualizaStatus(c) && this.compraService.atualizaTipoPagamento(c) && this.compraService.atualizarValorRecebido(c)) {
+        if(this.compraService.atualizaStatus(c)) {
+            return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(CompraDto.compraModelToDto(c));
+
+    }
+
+    @PutMapping("/compra-tipo-pagamento/{id}")
+    public ResponseEntity<CompraDto> atualizaTipoPagamento(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
+        CompraModel c = this.compraService.buscaCompraPorId(id);
+
+        if(c == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CompraDto.compraModelToDto(c));
+        }
+
+        c = cdto.compraDtoToModel();
+        c.setCodigo(id);
+
+        if(this.compraService.atualizaTipoPagamento(c)) {
+            return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(CompraDto.compraModelToDto(c));
+
+    }
+
+
+    @PutMapping("/compra-valor-recebido/{id}")
+    public ResponseEntity<CompraDto> atualizaValorRecebido(@PathVariable(value ="id") long id, @RequestBody @Valid CompraDto cdto) {
+        CompraModel c = this.compraService.buscaCompraPorId(id);
+
+        if(c == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CompraDto.compraModelToDto(c));
+        }
+
+        c = cdto.compraDtoToModel();
+        c.setCodigo(id);
+
+        if(this.compraService.atualizarValorRecebido(c)) {
             return ResponseEntity.status(HttpStatus.OK).body(CompraDto.compraModelToDto(c));
         }
 

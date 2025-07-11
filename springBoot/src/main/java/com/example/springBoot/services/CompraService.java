@@ -34,7 +34,8 @@ public class CompraService {
         }
 
         catch(Exception e){
-            System.out.println("ERRO: consulta SQL de listar compras incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return null;
         }
     }
@@ -45,7 +46,8 @@ public class CompraService {
         }
 
         catch(Exception e){
-            System.out.println("ERRO: consulta SQL para busca por id incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return null;
         }
     }
@@ -53,12 +55,14 @@ public class CompraService {
     public boolean salvaCompra(CompraModel c) {
         try{
             c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+            c.setStatus(1);
             this.compraRepository.salvaCompra(c);
             return true;
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta para salvar compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -74,15 +78,24 @@ public class CompraService {
     }
 
     public boolean atualizarValorRecebido(CompraModel c) {
+        BigDecimal valor = null;
         try{
-            if(this.valorValido(c.getValorRecebido()) && c.getStatus() == 1) {
+            valor = c.getValorRecebido();
+            c = this.compraRepository.buscaCompraPorId(c.getCodigo()); //busca a compra
+
+            if(this.valorValido(valor) && c.getStatus() == 1) {
                 c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+                c.setValorRecebido(valor);
                 return this.compraRepository.atualizaValorRecebido(c);
+            }
+            else{
+                System.out.println("Caiu no else do atualizaValorRecebido");
             }
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar o valor da compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -90,15 +103,23 @@ public class CompraService {
     }
 
     public boolean atualizaTipoPagamento(CompraModel c) {
+        long tPag = 0;
         try{
-            if(c.getTipoPagamento() > 0 && c.getStatus() == 1) {
+            tPag = c.getTipoPagamento();
+            c = this.compraRepository.buscaCompraPorId(c.getCodigo()); //busca a compra
+            if(tPag > 0 && c.getStatus() == 1) {
                 c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+                c.setTipoPagamento(tPag);
                 return this.compraRepository.atualizaTipoPagamento(c);
+            }
+            else{
+                System.out.println("Caiu no else do atualizaTipoPagamento");
             }
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar o tipo de pagamento da compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -148,8 +169,8 @@ public class CompraService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: lancado em algum lugar do metodo de descontar a " +   
-            "quantidade de produto do estoque");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
 
         }
 
@@ -163,20 +184,24 @@ public class CompraService {
             c = this.compraRepository.buscaCompraPorId(c.getCodigo()); //busca a compra
 
             //verifica se o status atual da e compra = 1 e se o novo status eh valido
-            if(c.getCodigo() == 1 && (st == 2 || st == 3)) {
-                c.setCodigo(st);
+            if(c.getStatus() == 1 && (st == 2 || st == 3)) {
+                c.setStatus(st);
 
                 //se a compra for finalizada, deve-se descontar os produtos do estoque
                 if(st == 2) {
                     this.descontaProdutosDoEstoque(c);
                 }
                 c.setDataHora(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
-                return this.atualizaStatus(c);
+                return this.compraRepository.atualizaStatus(c);
+            }
+            else{
+                System.out.println("Caiu no else do atualizaStatus");
             }
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para atualizar o status da compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
         }
 
         return false;
@@ -188,7 +213,8 @@ public class CompraService {
         }
 
         catch(Exception e) {
-            System.out.println("ERRO: consulta SQL para deletar compra incorreta.");
+            System.out.println("ERRO: " + e.getClass().getSimpleName() + 
+            " - " + e.getMessage());
             return false;
         }
     }

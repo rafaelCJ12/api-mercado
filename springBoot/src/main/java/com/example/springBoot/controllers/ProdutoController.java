@@ -61,8 +61,8 @@ public class ProdutoController {
 
     }
 
-    @PutMapping("/produtos/{id}")
-    public ResponseEntity<ProdutoDto> atualizaProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
+    @PutMapping("/produto-nome/{id}")
+    public ResponseEntity<ProdutoDto> atualizaProdutoNome(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
         ProdutoModel p = this.produtoService.buscarPorId(id);
 
         if(p == null) {
@@ -72,7 +72,45 @@ public class ProdutoController {
         p = pdto.produtoDtoToModel();
         p.setCodigo(id);
 
-        if(this.produtoService.atualizarNomeProduto(p) && this.produtoService.atualizarQuantidadeProduto(p) && this.produtoService.atualizarValorProduto(p)){
+        if(this.produtoService.atualizarNomeProduto(p)){
+            return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoDto.produtoModelToDto(p));
+        
+    }
+
+    @PutMapping("/produto-quantidade/{id}")
+    public ResponseEntity<ProdutoDto> atualizaQuantidadeProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
+        ProdutoModel p = this.produtoService.buscarPorId(id);
+
+        if(p == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ProdutoDto.produtoModelToDto(p));
+        }
+
+        p = pdto.produtoDtoToModel();
+        p.setCodigo(id);
+
+        if(this.produtoService.atualizarQuantidadeProduto(p)){
+            return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ProdutoDto.produtoModelToDto(p));
+        
+    }
+
+    @PutMapping("/produto-valor/{id}")
+    public ResponseEntity<ProdutoDto> atualizaValorProduto(@PathVariable(value ="id") long id, @RequestBody @Valid ProdutoDto pdto) {
+        ProdutoModel p = this.produtoService.buscarPorId(id);
+
+        if(p == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ProdutoDto.produtoModelToDto(p));
+        }
+
+        p = pdto.produtoDtoToModel();
+        p.setCodigo(id);
+
+        if(this.produtoService.atualizarValorProduto(p)){
             return ResponseEntity.status(HttpStatus.OK).body(ProdutoDto.produtoModelToDto(p));
         }
 

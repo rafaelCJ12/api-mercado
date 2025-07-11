@@ -86,7 +86,7 @@ public class ProdutoService {
         }
 
         else{
-             p.setQuantidade(p.getQuantidade().round(new MathContext(1, RoundingMode.HALF_UP)));
+             p.setQuantidade(p.getQuantidade().round(new MathContext(2, RoundingMode.HALF_UP)));
         }
 
         return p;

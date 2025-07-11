@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CompraDto {
     @JsonProperty("responsavel")
     private long responsavel = 0;
-    @JsonProperty("tipoPagmento")
+    @JsonProperty("tipoPagamento")
     private long tipoPagamento = 0;
     @JsonProperty("valorRecebido")
     private BigDecimal valorRecebido;
