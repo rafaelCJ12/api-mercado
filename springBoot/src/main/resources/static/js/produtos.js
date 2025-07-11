@@ -1,74 +1,77 @@
-const apiBase = '/produtos';
+const baseProd = '/produtos';
 
-const form = document.getElementById('formProduto');
-const idField = document.getElementById('produtoId');
-const nomeField = document.getElementById('nome');
-const precoField = document.getElementById('preco');
-const qtdField = document.getElementById('quantidade');
-const tbody = document.getElementById('tbodyProdutos');
-const btnCancelar = document.getElementById('btnCancelar');
+const formP      = document.getElementById('formProduto');
+const codigoP    = document.getElementById('produtoCodigo');
+const nomeP      = document.getElementById('produtoNome');
+const valorP     = document.getElementById('produtoValor');
+const qtdP       = document.getElementById('produtoQuantidade');
+const massaP     = document.getElementById('produtoEhUnidadeMassa');
+const tabelaP    = document.getElementById('listaProdutos');
+const btnCancelP = document.getElementById('cancelarProduto');
 
-async function listar() {
-  const res = await fetch(apiBase);
+async function carregarProdutos() {
+  const res = await fetch(baseProd);
   const dados = await res.json();
-  tbody.innerHTML = dados.map(p => `
+  tabelaP.innerHTML = dados.map(p => `
     <tr>
-      <td>${p.id}</td>
+      <td>${p.codigo}</td>
       <td>${p.nome}</td>
-      <td>${p.preco.toFixed(2)}</td>
+      <td>${p.valorunitario.toFixed(2)}</td>
       <td>${p.quantidade}</td>
+      <td>${p.ehunidademassa}</td>
       <td>
-        <button onclick="editar(${p.id})">✏️</button>
-        <button onclick="remover(${p.id})">🗑️</button>
+        <button onclick="editarProduto(${p.codigo})">✏️</button>
+        <button onclick="deletarProduto(${p.codigo})">🗑️</button>
       </td>
     </tr>
   `).join('');
 }
 
-async function salvar(e) {
+async function salvarProduto(e) {
   e.preventDefault();
-  const payload = {
-    nome: nomeField.value,
-    preco: parseFloat(precoField.value),
-    quantidade: parseInt(qtdField.value)
+  const dto = {
+    nome: nomeP.value,
+    valorunitario: parseFloat(valorP.value),
+    quantidade: parseFloat(qtdP.value),
+    ehunidademassa: massaP.value === 'true'
   };
-  let method = 'POST', url = apiBase;
-  if (idField.value) {
+  let method = 'POST', url = baseProd;
+  if (codigoP.value) {
     method = 'PUT';
-    url += `/${idField.value}`;
+    url += `/${codigoP.value}`;
   }
   await fetch(url, {
-    method, headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
+    method,
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(dto)
   });
-  resetForm();
-  listar();
+  resetProduto();
+  carregarProdutos();
 }
 
-async function editar(id) {
-  const res = await fetch(`${apiBase}/${id}`);
+async function editarProduto(codigo) {
+  const res = await fetch(`${baseProd}/${codigo}`);
   const p = await res.json();
-  idField.value = p.id;
-  nomeField.value = p.nome;
-  precoField.value = p.preco;
-  qtdField.value = p.quantidade;
-  btnCancelar.style.display = 'inline-block';
+  codigoP.value = p.codigo;
+  nomeP.value = p.nome;
+  valorP.value = p.valorunitario;
+  qtdP.value = p.quantidade;
+  massaP.value = p.ehunidademassa;
+  btnCancelP.style.display = 'inline-block';
 }
 
-async function remover(id) {
-  if (!confirm('Confirmar exclusão?')) return;
-  await fetch(`${apiBase}/${id}`, { method: 'DELETE' });
-  listar();
+async function deletarProduto(codigo) {
+  if (!confirm('Confirma?')) return;
+  await fetch(`${baseProd}/${codigo}`, { method: 'DELETE' });
+  carregarProdutos();
 }
 
-function resetForm() {
-  form.reset();
-  idField.value = '';
-  btnCancelar.style.display = 'none';
+function resetProduto() {
+  formP.reset();
+  codigoP.value = '';
+  btnCancelP.style.display = 'none';
 }
 
-btnCancelar.addEventListener('click', resetForm);
-form.addEventListener('submit', salvar);
-
-// inicialização
-listar();
+btnCancelP.addEventListener('click', resetProduto);
+formP.addEventListener('submit', salvarProduto);
+window.addEventListener('DOMContentLoaded', carregarProdutos);

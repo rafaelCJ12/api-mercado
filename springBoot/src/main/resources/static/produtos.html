@@ -18,28 +18,35 @@
     <h2>Produtos</h2>
 
     <form id="formProduto">
-      <input type="hidden" id="produtoId">
+      <input type="hidden" id="produtoCodigo">
       <div>
         <label>Nome:</label>
-        <input type="text" id="nome" required>
+        <input type="text" id="produtoNome" required>
       </div>
       <div>
-        <label>Preço:</label>
-        <input type="number" id="preco" step="0.01" required>
+        <label>Valor Unitário:</label>
+        <input type="number" id="produtoValor" step="0.01" required>
       </div>
       <div>
         <label>Quantidade:</label>
-        <input type="number" id="quantidade" step="1" required>
+        <input type="number" id="produtoQuantidade" step="0.01" required>
       </div>
-      <button type="submit" id="btnSalvar">Salvar</button>
-      <button type="button" id="btnCancelar" style="display:none">Cancelar</button>
+      <div>
+        <label>Unidade de Massa?</label>
+        <select id="produtoEhUnidadeMassa">
+          <option value="true">Sim</option>
+          <option value="false">Não</option>
+        </select>
+      </div>
+      <button type="submit">Salvar</button>
+      <button type="button" id="cancelarProduto" style="display:none">Cancelar</button>
     </form>
 
     <table>
-      <thead>
-        <tr><th>ID</th><th>Nome</th><th>Preço</th><th>Qtd</th><th>Ações</th></tr>
-      </thead>
-      <tbody id="tbodyProdutos"></tbody>
+      <thead><tr>
+        <th>Código</th><th>Nome</th><th>Valor</th><th>Qtde</th><th>Massa?</th><th>Ações</th>
+      </tr></thead>
+      <tbody id="listaProdutos"></tbody>
     </table>
   </div>
 
