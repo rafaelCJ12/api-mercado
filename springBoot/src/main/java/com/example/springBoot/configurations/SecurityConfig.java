@@ -1,9 +1,11 @@
 package com.example.springBoot.configurations;
 
+/*
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,16 +30,29 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults()) // <-- Habilita CORS
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login", "/api/funcionarios").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+        http
+        .csrf().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .authorizeHttpRequests(auth -> auth
+            // libera o POST /login
+            .requestMatchers(HttpMethod.POST, "/login").permitAll()
+            // libera todas as páginas HTML, CSS, JS e assets
+            .requestMatchers(
+            "/", 
+            "/index.html", 
+            "/login.html",
+            "//*.html",
+            "/css/", 
+            "/js/",
+            "/assets/"
+            ).permitAll()
+            // tudo o mais precisa de token
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
+        return http.build();
     }
 
     @Bean
@@ -58,4 +73,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-}
+}*/

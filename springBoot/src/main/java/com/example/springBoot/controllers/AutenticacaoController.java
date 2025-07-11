@@ -1,5 +1,5 @@
 package com.example.springBoot.controllers;
-
+/*
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -37,3 +37,4 @@ public class AutenticacaoController {
     }
     
 }
+*/

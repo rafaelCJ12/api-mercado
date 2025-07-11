@@ -1,5 +1,5 @@
 package com.example.springBoot.services;
-
+/*
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
@@ -66,3 +66,4 @@ public class AutenticacaoService {
     }
     
 }
+*/
