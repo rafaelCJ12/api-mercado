@@ -1,5 +1,4 @@
-const baseFunc = '/funcionarios';
-
+const baseFunc   = '/api/funcionarios';
 const formF      = document.getElementById('formFuncionario');
 const codigoF    = document.getElementById('funcCodigo');
 const nomeF      = document.getElementById('funcNome');
@@ -34,14 +33,14 @@ async function salvarFuncionario(e) {
     senha: senhaF.value,
     tipo: parseInt(tipoF.value)
   };
-  let method = 'POST', url = baseFunc;
+  let method = 'POST', url = '/api/funcionario';
   if (codigoF.value) {
     method = 'PUT';
-    url += `/${codigoF.value}`;
+    url = `/api/funcionarios/${codigoF.value}`;
   }
   await fetch(url, {
     method,
-    headers: {'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json'},
     body: JSON.stringify(dto)
   });
   resetFuncionario();
@@ -61,7 +60,7 @@ async function editarFuncionario(codigo) {
 
 async function deletarFuncionario(codigo) {
   if (!confirm('Confirma?')) return;
-  await fetch(`${baseFunc}/${codigo}`, { method: 'DELETE' });
+  await fetch(`/api/funcionarios/${codigo}`, { method: 'DELETE' });
   carregarFuncionarios();
 }
 
