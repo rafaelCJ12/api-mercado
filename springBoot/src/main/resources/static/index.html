@@ -3,16 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Marketplace Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- REDIRECIONAMENTO SE NÃO ESTIVER LOGADO -->
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // usa replace para não manter o histórico desta página
+      window.location.replace('login.html');
+    }
+  </script>
 
   <style>
     body {
       background-color: #f4f7fa;
       color: #333;
+      font-family: 'Poppins', sans-serif;
     }
     .menu-header {
       text-align: center;
@@ -75,7 +87,7 @@
 <body>
   <div class="menu-header">
     <h1>Supermarket</h1>
-    <p>Escolha uma das seções abaixo acessar o sistema</p>
+    <p>Escolha uma das seções abaixo para acessar o sistema</p>
   </div>
 
   <div class="menu-container">
