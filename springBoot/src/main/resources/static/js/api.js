@@ -8,3 +8,5 @@ async function request(path, opts = {}) {
   if (!res.ok) throw new Error((await res.json()).message || res.statusText);
   return res.status === 204 ? null : res.json();
 }
+
+// ignore
